@@ -28,7 +28,7 @@ function timeToMinutes(timeString){
 }
 
 function minutesToTime(timeString){
-    timeString = timeString < 0 ? timeString + MINUTESADAY: timeString;
+    timeString = timeString < 0 ? timeString + MINUTESADAY : timeString;
     const minutes = timeString % MINUTESADAY;
     const hours = String(Math.floor(minutes / HOURS)).padStart(2, '0');
     const minutesRemaining = String(minutes % HOURS).padStart(2, '0');
