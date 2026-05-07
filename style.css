@@ -1,0 +1,36 @@
+body {
+  background-color: rgb(219, 138, 0);
+  font-family: "Sofia", sans-serif;
+}
+.center {
+  width: 80%;       /* Required: must be less than container width */
+  margin: 0 auto;
+}
+
+.meal-card {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    align-items: center;
+    border-radius: 50px;
+    margin-bottom: 10px;
+    background-color: rgba(222, 184, 135, 0.699);
+}
+
+.meal-label{
+    flex: 1;
+    text-align: left;
+    font-style: italic;
+}
+
+.meal-time{
+    flex: 1;
+    text-align: center;
+    font-size: large;
+}
+
+.meal-type{
+    flex: 1;
+    text-align: right;
+    font-style: oblique;
+}
