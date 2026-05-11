@@ -249,3 +249,44 @@ input[type="checkbox"] {
 #profileContainer {
     display: none;
 }
+
+.status-card {
+    background-color: #0f3460;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    border-left: 4px solid #e94560;
+}
+
+.status-title {
+    color: #a8a8b3;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.status-current {
+    font-size: 1.1rem;
+    color: #eaeaea;
+    margin-bottom: 12px;
+}
+
+.status-next {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #a8a8b3;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+}
+
+.status-time {
+    color: #e94560;
+    font-weight: bold;
+}
+
+.status-countdown {
+    color: #a8a8b3;
+    font-size: 0.85rem;
+}

@@ -38,23 +38,18 @@ function calculate() {
     const inputElementWakeUpTime = document.getElementById("wakeupTime").value;
     const inputElementSleepTime = document.getElementById("sleepTime").value;
     const inputElementExerciseTime = document.getElementById("exerciseTime").value;
-
     const validWakeUpTime = validateInputs(inputElementWakeUpTime);
     const validSleepTime = validateInputs(inputElementSleepTime);
     const validExerciseTime = validateInputs(inputElementExerciseTime);
-
     if (!validWakeUpTime || !validSleepTime){
         results.innerHTML = "<p class='error'>Please enter wake & sleep times!</p>";
         return;
     }
-
     const wakeMinutes = timeToMinutes(inputElementWakeUpTime);
     let sleepMinutes = timeToMinutes(inputElementSleepTime);
     if (sleepMinutes < wakeMinutes) sleepMinutes += MINUTESADAY;
-
     const tdeeData = calculateTDEE();
     const tdee = tdeeData ? tdeeData.target : null;
-
     const cal = {
         breakfast:       tdee ? Math.round(tdee * 0.30) : null,
         snack:           tdee ? Math.round(tdee * 0.10) : null,
@@ -65,10 +60,6 @@ function calculate() {
         postWorkout:     tdee ? Math.round(tdee * 0.15) : null,
         preSleep:        tdee ? Math.round(tdee * 0.05) : null,
     };
-
-    const fastingData = calculateFastingWindow(wakeMinutes, sleepMinutes - HOURS * 2);
-    renderSummary(tdeeData, fastingData);
-
     const meals = [
         {label: "🌅 Breakfast", sortTime: wakeMinutes + 30, type: "Largest meal • High carbs + protein", description: "Eat within 30 mins of waking. Focus on complex carbs + protein. Oats, eggs, whole grain toast. Biggest meal — boosts metabolism and resets your circadian clock.", calories: cal.breakfast},
         {label: "🍿 Snack", sortTime: wakeMinutes + HOURS * 3, type: "Small • Fruits, nuts or yogurt", description: "Keep it small. Fruits, nuts, or Greek yogurt. Maintains blood sugar between meals and prevents overeating at lunch.", calories: cal.snack},
@@ -76,7 +67,6 @@ function calculate() {
         {label: "🌄 Dinner", sortTime: sleepMinutes - HOURS * 3, type: "Small • Low carb, high protein", description: "Keep it light and low carb. Focus on protein and vegetables. Heavy meals late disrupt sleep quality and fat metabolism.", calories: cal.dinner},
         {label: "🎑 Stop Eating", sortTime: sleepMinutes - HOURS * 2, type: "⚠️ No food after this", description: "Your body needs 2-3 hrs to digest before sleep. Eating after this raises blood glucose overnight and disrupts melatonin.", calories: null},
     ];
-
     if (validExerciseTime){
         const exerciseMinutes = timeToMinutes(inputElementExerciseTime);
         meals.push(
@@ -86,11 +76,15 @@ function calculate() {
             {label: "🌙 Pre sleep", sortTime: sleepMinutes - HOURS / 2, type: "Casein only • Greek yogurt, cottage cheese", description: "Casein protein only — Greek yogurt or cottage cheese. Slow digesting, feeds muscles overnight without spiking blood sugar.", calories: cal.preSleep},
         );
     }
-
     meals.sort((a, b) => a.sortTime - b.sortTime);
+
+    // ← renderStatus AFTER meals is defined and sorted
+    const fastingData = calculateFastingWindow(wakeMinutes, sleepMinutes - HOURS * 2);
+    renderSummary(tdeeData, fastingData);
+    renderStatus(meals);
+
     results.innerHTML = "";
     meals.forEach(meal => createMealCard(meal.label, minutesToTime(meal.sortTime), meal.type, meal.description, meal.calories));
-
     saveTimes("wakeupTime", inputElementWakeUpTime);
     saveTimes("sleepTime", inputElementSleepTime);
     saveTimes("exerciseTime", inputElementExerciseTime);
@@ -206,6 +200,8 @@ function calculateTDEE(){
     const goal = document.getElementById("goal").value;
     const activity = parseFloat(document.getElementById("activity").value);
     const extraCalories = parseInt(document.getElementById("extraCalories").value) || 0;
+    const profileEnabled = document.getElementById("profileToggle").checked;
+    if (!profileEnabled) return null;
 
     if (!age || !weight || !height) return null;
 
@@ -289,11 +285,6 @@ function saveProfile(){
 }
 
 function loadProfile(){
-    const savedProfile = localStorage.getItem("profileToggle");
-    if (savedProfile === "true"){
-        document.getElementById("profileToggle").checked = true;
-        document.getElementById("profileContainer").style.display = "block";
-    }
     const fields = ["age", "weight", "height", "sex", "goal", "activity", "extraCalories"];
     fields.forEach(field => {
         const saved = localStorage.getItem(field);
@@ -319,6 +310,66 @@ function loadTimes(inputId){
         document.getElementById("exerciseToggle").checked = true;
         document.getElementById("exerciseTimeContainer").style.display = "block";
     }
+}
+
+function getCurrentStatus(meals){
+    const now = new Date();
+    const currentMinutes = now.getHours() * HOURS + now.getMinutes();
+
+    let current = null;
+    let next = null;
+
+    for (let i = 0; i < meals.length; i++){
+        if (meals[i].sortTime <= currentMinutes){
+            current = meals[i];
+        } else {
+            next = meals[i];
+            break;
+        }
+    }
+
+    // Handle case where we're past all meals for the day
+    if (!next) next = meals[0];
+
+    const minutesUntilNext = next
+        ? next.sortTime > currentMinutes
+            ? next.sortTime - currentMinutes
+            : (next.sortTime + MINUTESADAY) - currentMinutes
+        : null;
+
+    const hoursUntil = Math.floor(minutesUntilNext / HOURS);
+    const minsUntil = minutesUntilNext % HOURS;
+
+    const timeUntilText = hoursUntil > 0
+        ? `${hoursUntil} hr ${minsUntil} min`
+        : `${minsUntil} min`;
+
+    return { current, next, timeUntilText };
+}
+
+function renderStatus(meals){
+    const { current, next, timeUntilText } = getCurrentStatus(meals);
+    const summary = document.getElementById("summary");
+
+    const currentText = current
+        ? `You're in your <strong>${current.label}</strong> window`
+        : `No meal window active yet today`;
+
+    const statusHTML = `
+        <div class="status-card">
+            <div class="status-title">🕐 Right Now</div>
+            <div class="status-current">${currentText}</div>
+            ${next ? `
+            <div class="status-next">
+                <span>Next: ${next.label}</span>
+                <span class="status-time">${minutesToTime(next.sortTime)}</span>
+            </div>
+            <div class="status-countdown">⏳ In ${timeUntilText}</div>
+            ` : ""}
+        </div>
+    `;
+
+    summary.innerHTML = statusHTML + summary.innerHTML;
 }
 
 function loadProfile(){
