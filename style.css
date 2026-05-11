@@ -207,3 +207,45 @@ input[type="checkbox"] {
 .summary-value.green {
     color: #4caf50;
 }
+
+.summary-card.collapsible {
+    cursor: pointer;
+}
+
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summary-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.collapse-icon {
+    color: #e94560;
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.collapsible.expanded .collapse-icon {
+    transform: rotate(180deg);
+}
+
+.summary-body {
+    display: none;
+    margin-top: 16px;
+    border-top: 1px solid #e9456022;
+    padding-top: 12px;
+}
+
+.collapsible.expanded .summary-body {
+    display: block;
+}
+
+#profileContainer {
+    display: none;
+}

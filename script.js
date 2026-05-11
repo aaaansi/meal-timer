@@ -19,6 +19,21 @@ results.addEventListener("click", function(e){
     if (card) card.classList.toggle("expanded");
 });
 
+document.addEventListener("click", function(e){
+    const card = e.target.closest(".collapsible");
+    if (card) card.classList.toggle("expanded");
+});
+
+document.getElementById("profileToggle")
+    .addEventListener("change", function(){
+        const container = document.getElementById("profileContainer");
+        if (this.checked){
+            container.style.display = "block";
+        } else {
+            container.style.display = "none";
+        }
+    });
+
 function calculate() {
     const inputElementWakeUpTime = document.getElementById("wakeupTime").value;
     const inputElementSleepTime = document.getElementById("sleepTime").value;
@@ -51,7 +66,8 @@ function calculate() {
         preSleep:        tdee ? Math.round(tdee * 0.05) : null,
     };
 
-    renderSummary(tdeeData);
+    const fastingData = calculateFastingWindow(wakeMinutes, sleepMinutes - HOURS * 2);
+    renderSummary(tdeeData, fastingData);
 
     const meals = [
         {label: "🌅 Breakfast", sortTime: wakeMinutes + 30, type: "Largest meal • High carbs + protein", description: "Eat within 30 mins of waking. Focus on complex carbs + protein. Oats, eggs, whole grain toast. Biggest meal — boosts metabolism and resets your circadian clock.", calories: cal.breakfast},
@@ -96,59 +112,90 @@ function createMealCard(label, time, mealType, description, calories){
     </div>`;
 }
 
-function renderSummary(tdeeData){
+function renderSummary(tdeeData, fastingData){
     const summary = document.getElementById("summary");
+    let html = "";
 
-    if (!tdeeData){
-        summary.innerHTML = "";
-        return;
+    if (tdeeData){
+        const goalText = {
+            lose:     "Lose weight (−500 cal deficit)",
+            maintain: "Maintain weight",
+            gain:     "Build muscle (+300 cal surplus)"
+        };
+        const deficitSurplus = tdeeData.target - tdeeData.maintenance;
+        const deficitLabel = deficitSurplus < 0
+            ? `${deficitSurplus} cal deficit`
+            : `+${deficitSurplus} cal surplus`;
+
+        html += `
+        <div class="summary-card collapsible">
+            <div class="summary-header">
+                <div class="summary-title">📊 Calorie Breakdown</div>
+                <div class="summary-preview">
+                    <span class="summary-value highlight">${tdeeData.target} kcal daily target</span>
+                    <span class="collapse-icon">▼</span>
+                </div>
+            </div>
+            <div class="summary-body">
+                <div class="summary-row">
+                    <span class="summary-label">🔥 BMR (at rest)</span>
+                    <span class="summary-value">${tdeeData.bmr} kcal</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">🏃 TDEE (with activity)</span>
+                    <span class="summary-value">${tdeeData.tdee} kcal</span>
+                </div>
+                ${tdeeData.extraBurn > 0 ? `
+                <div class="summary-row">
+                    <span class="summary-label">⌚ Mi Band extra burn</span>
+                    <span class="summary-value green">+${tdeeData.extraBurn} kcal</span>
+                </div>` : ""}
+                <div class="summary-row">
+                    <span class="summary-label">⚖️ Maintenance calories</span>
+                    <span class="summary-value">${tdeeData.maintenance} kcal</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">🎯 Goal</span>
+                    <span class="summary-value">${goalText[tdeeData.goal]}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">🍽️ Daily target</span>
+                    <span class="summary-value highlight">${tdeeData.target} kcal</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">📉 Deficit / Surplus</span>
+                    <span class="summary-value ${deficitSurplus < 0 ? '' : 'green'}">${deficitLabel}</span>
+                </div>
+            </div>
+        </div>`;
     }
 
-    const goalText = {
-        lose:     "Lose weight (−500 cal deficit)",
-        maintain: "Maintain weight",
-        gain:     "Build muscle (+300 cal surplus)"
-    };
-
-    const deficitSurplus = tdeeData.target - tdeeData.maintenance;
-    const deficitLabel = deficitSurplus < 0
-        ? `${deficitSurplus} cal deficit`
-        : `+${deficitSurplus} cal surplus`;
-
-    summary.innerHTML = `
-        <div class="summary-card">
-            <div class="summary-title">📊 Your Daily Calorie Breakdown</div>
-            <div class="summary-row">
-                <span class="summary-label">🔥 BMR (at rest)</span>
-                <span class="summary-value">${tdeeData.bmr} kcal</span>
-            </div>
-            <div class="summary-row">
-                <span class="summary-label">🏃 TDEE (with activity)</span>
-                <span class="summary-value">${tdeeData.tdee} kcal</span>
-            </div>
-            ${tdeeData.extraBurn > 0 ? `
-            <div class="summary-row">
-                <span class="summary-label">⌚ Mi Band extra burn</span>
-                <span class="summary-value green">+${tdeeData.extraBurn} kcal</span>
-            </div>` : ""}
-            <div class="summary-row">
-                <span class="summary-label">⚖️ Maintenance calories</span>
-                <span class="summary-value">${tdeeData.maintenance} kcal</span>
-            </div>
-            <div class="summary-row">
-                <span class="summary-label">🎯 Goal</span>
-                <span class="summary-value">${goalText[tdeeData.goal]}</span>
-            </div>
-            <div class="summary-row">
-                <span class="summary-label">🍽️ Daily target</span>
-                <span class="summary-value highlight">${tdeeData.target} kcal</span>
-            </div>
-            <div class="summary-row">
-                <span class="summary-label">📉 Deficit / Surplus</span>
-                <span class="summary-value ${deficitSurplus < 0 ? '' : 'green'}">${deficitLabel}</span>
+    html += `
+    <div class="summary-card collapsible">
+        <div class="summary-header">
+            <div class="summary-title">⏱️ Fasting Window</div>
+            <div class="summary-preview">
+                <span class="summary-value highlight">${fastingData.protocol} Intermittent Fast</span>
+                <span class="collapse-icon">▼</span>
             </div>
         </div>
-    `;
+        <div class="summary-body">
+            <div class="summary-row">
+                <span class="summary-label">🍽️ Eating window</span>
+                <span class="summary-value">${fastingData.eatingHrs} hours</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">💤 Fasting window</span>
+                <span class="summary-value">${fastingData.fastingHrs} hours</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">📋 IF Protocol</span>
+                <span class="summary-value highlight">${fastingData.protocol} Intermittent Fast</span>
+            </div>
+        </div>
+    </div>`;
+
+    summary.innerHTML = html;
 }
 
 function calculateTDEE(){
@@ -162,7 +209,6 @@ function calculateTDEE(){
 
     if (!age || !weight || !height) return null;
 
-    // BMR
     let bmr;
     if (sex === "male"){
         bmr = 88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age);
@@ -170,16 +216,10 @@ function calculateTDEE(){
         bmr = 447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age);
     }
 
-    // TDEE
     const tdee = Math.round(bmr * activity);
-
-    // Net TDEE including Mi Band extra burn
     const netTDEE = tdee + extraCalories;
-
-    // Maintenance (no goal adjustment)
     const maintenance = netTDEE;
 
-    // Goal adjusted target
     let target = netTDEE;
     if (goal === "lose") target -= 500;
     if (goal === "gain") target += 300;
@@ -193,6 +233,20 @@ function calculateTDEE(){
         goal:        goal
     };
 }
+
+function calculateFastingWindow(wakeMinutes, stopEatingMinutes){
+    const breakfastTime = wakeMinutes + 30;
+    const eatingWindow = stopEatingMinutes - breakfastTime;
+    const fastingWindow = MINUTESADAY - eatingWindow;
+    const eatingHrs = Math.floor(eatingWindow / HOURS);
+    const fastingHrs = Math.floor(fastingWindow / HOURS);
+    return {
+        eatingHrs,
+        fastingHrs,
+        protocol: `${fastingHrs}:${eatingHrs}`
+    };
+}
+
 function timeToMinutes(timeString){
     const timeArray = timeString.split(':');
     return parseInt(timeArray[0]) * HOURS + parseInt(timeArray[1]);
@@ -224,6 +278,7 @@ function saveTimes(inputId, inputTime){
 }
 
 function saveProfile(){
+    localStorage.setItem("profileToggle", document.getElementById("profileToggle").checked);
     localStorage.setItem("age", document.getElementById("age").value);
     localStorage.setItem("weight", document.getElementById("weight").value);
     localStorage.setItem("height", document.getElementById("height").value);
@@ -231,6 +286,19 @@ function saveProfile(){
     localStorage.setItem("goal", document.getElementById("goal").value);
     localStorage.setItem("activity", document.getElementById("activity").value);
     localStorage.setItem("extraCalories", document.getElementById("extraCalories").value);
+}
+
+function loadProfile(){
+    const savedProfile = localStorage.getItem("profileToggle");
+    if (savedProfile === "true"){
+        document.getElementById("profileToggle").checked = true;
+        document.getElementById("profileContainer").style.display = "block";
+    }
+    const fields = ["age", "weight", "height", "sex", "goal", "activity", "extraCalories"];
+    fields.forEach(field => {
+        const saved = localStorage.getItem(field);
+        if (saved) document.getElementById(field).value = saved;
+    });
 }
 
 function loadTimes(inputId){
