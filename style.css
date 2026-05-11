@@ -155,3 +155,19 @@ input[type="checkbox"] {
     accent-color: #e94560; /* makes checkbox match your theme color */
     cursor: pointer;
 }
+
+.meal-description {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #a8a8b3;
+    line-height: 1.5;
+}
+.meal-card.expanded .meal-description {
+    display: block;
+}
+.meal-card {
+    cursor: pointer;
+    flex-wrap: wrap; /* allows description to wrap to next line */
+}

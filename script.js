@@ -1,6 +1,7 @@
 const HOURS = 60;
 const MINUTESADAY = 1440;
 const results = document.getElementById("results");
+
 document.getElementById("exerciseToggle")
     .addEventListener("change", function(){
         const container = document.getElementById("exerciseTimeContainer");
@@ -12,6 +13,12 @@ document.getElementById("exerciseToggle")
             localStorage.removeItem("exerciseTime");
         }
     });
+
+results.addEventListener("click", function(e){
+    const card = e.target.closest(".meal-card");
+    if (card) card.classList.toggle("expanded");
+});
+
 function calculate() {
     // Read values at click time, not page load
     const inputElementWakeUpTime = document.getElementById("wakeupTime").value;
@@ -26,36 +33,35 @@ function calculate() {
         results.innerHTML = "<p class='error'>Please enter wake & sleep times!</p>"
         return;
     }
-    if (timeToMinutes(inputElementWakeUpTime) > timeToMinutes(inputElementSleepTime)){
-        results.innerHTML = "<p class='error'>Sleep time must be after wake time!</p>"
-        return;
+    const wakeMinutes = timeToMinutes(inputElementWakeUpTime);
+    let sleepMinutes = timeToMinutes(inputElementSleepTime);
+
+    // If sleep is before wake, assume next day
+    if (sleepMinutes < wakeMinutes){
+        sleepMinutes += MINUTESADAY;
     }
 
-    const wakeMinutes = timeToMinutes(inputElementWakeUpTime);
-    const sleepMinutes = timeToMinutes(inputElementSleepTime);
-
     const meals = [
-        {label: "🌅 Breakfast", sortTime: wakeMinutes + 30, type: "Largest meal • High carbs + protein"},
-        {label: "🍿 Snack", sortTime: wakeMinutes + HOURS * 3, type: "Small • Fruits, nuts or yogurt"},
-        {label: "☀️ Lunch", sortTime: wakeMinutes + HOURS * 5, type: "Moderate • Balanced macros"},
-        {label: "🌄 Dinner", sortTime: sleepMinutes - HOURS * 3, type: "Small • Low carb, high protein"},
-        {label: "🎑 Stop Eating", sortTime: sleepMinutes - HOURS * 2, type: "⚠️ No food after this"},
+        {label: "🌅 Breakfast", sortTime: wakeMinutes + 30, type: "Largest meal • High carbs + protein", description: "Eat within 30 mins of waking. Focus on complex carbs + protein. Oats, eggs, whole grain toast. Biggest meal — boosts metabolism and resets your circadian clock."},
+        {label: "🍿 Snack", sortTime: wakeMinutes + HOURS * 3, type: "Small • Fruits, nuts or yogurt", description: "Keep it small. Fruits, nuts, or Greek yogurt. Maintains blood sugar between meals and prevents overeating at lunch."},
+        {label: "☀️ Lunch", sortTime: wakeMinutes + HOURS * 5, type: "Moderate • Balanced macros", description: "Balanced macros — protein, carbs and healthy fats. Good time for your second largest meal. Energy levels are optimal mid-day."},
+        {label: "🌄 Dinner", sortTime: sleepMinutes - HOURS * 3, type: "Small • Low carb, high protein", description: "Keep it light and low carb. Focus on protein and vegetables. Heavy meals late disrupt sleep quality and fat metabolism."},
+        {label: "🎑 Stop Eating", sortTime: sleepMinutes - HOURS * 2, type: "⚠️ No food after this", description: "Your body needs 2-3 hrs to digest before sleep. Eating after this raises blood glucose overnight and disrupts melatonin."},
     ];
 
     if (validExerciseTime){
         const exerciseMinutes = timeToMinutes(inputElementExerciseTime);
         meals.push(
-        {label: "🍽️ Pre-workout meal", sortTime: exerciseMinutes - HOURS * 3, type: "High carbs + moderate protein"},
-        {label: "⚡ Pre-workout snack", sortTime: exerciseMinutes - HOURS * 0.75, type: "Quick carbs • Banana, rice cakes"},
-        {label: "💪 Post workout", sortTime: exerciseMinutes + HOURS / 2, type: "Carbs + protein within 30 mins"},
-        {label: "🌙 Pre sleep", sortTime: sleepMinutes - HOURS / 2, type: "Casein only • Greek yogurt, cottage cheese"},
+            {label: "🍽️ Pre-workout meal", sortTime: exerciseMinutes - HOURS * 3, type: "High carbs + moderate protein", description: "Eat 2-3 hrs before. High complex carbs + moderate protein. Maximises glycogen stores for performance."},
+            {label: "⚡ Pre-workout snack", sortTime: exerciseMinutes - HOURS * 0.75, type: "Quick carbs • Banana, rice cakes", description: "45 mins before. Quick carbs only — banana, rice cakes, energy gel. Easy to digest, fast energy."},
+            {label: "💪 Post workout", sortTime: exerciseMinutes + HOURS / 2, type: "Carbs + protein within 30 mins", description: "Most critical window. Carbs + protein within 30 mins. Repairs muscle and replenishes glycogen fast."},
+            {label: "🌙 Pre sleep", sortTime: sleepMinutes - HOURS / 2, type: "Casein only • Greek yogurt, cottage cheese", description: "Casein protein only — Greek yogurt or cottage cheese. Slow digesting, feeds muscles overnight without spiking blood sugar."},
         );
     }
-
     meals.sort((a, b) => a.sortTime - b.sortTime);
 
     results.innerHTML = "";
-    meals.forEach(meal => createMealCard(meal.label, minutesToTime(meal.sortTime), meal.type));
+    meals.forEach(meal => createMealCard(meal.label, minutesToTime(meal.sortTime), meal.type, meal.description));
 
     saveTimes("wakeupTime", inputElementWakeUpTime);
     saveTimes("sleepTime", inputElementSleepTime);
@@ -66,11 +72,12 @@ function validateInputs(timeInput){
     return timeInput !== "";
 }
 
-function createMealCard(label, time, mealType){
+function createMealCard(label, time, mealType, description){
     results.innerHTML += `<div class="meal-card">
         <span class="meal-label">${label}</span>
         <span class="meal-time">${time}</span>
         <span class="meal-type">${mealType}</span>
+        <div class="meal-description">${description}</div>
     </div>`;
 }
 
@@ -134,4 +141,4 @@ if (localStorage.length > 0){
    loadTimes("exerciseTime");
 }
 
-document.getElementById("calculateButton").addEventListener("click", calculate);
+document.getElementById("calculateButton").addEventListener("click", calculate)
