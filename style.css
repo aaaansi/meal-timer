@@ -1,161 +1,141 @@
-/* ---- BASE ---- */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* makes sizing more predictable */
+    box-sizing: border-box;
 }
-
 body {
-    background-color: #1a1a2e; /* dark navy background */
+    background-color: #1a1a2e;
     font-family: 'Segoe UI', sans-serif;
-    color: #eaeaea; /* light text for dark background */
-    min-height: 100vh; /* fills full screen height */
+    color: #eaeaea;
+    min-height: 100vh;
 }
-
-/* ---- CONTAINER ---- */
 .center {
     width: 90%;
-    max-width: 700px; /* stops it getting too wide on big screens */
+    max-width: 700px;
     margin: 0 auto;
     padding: 40px 0;
 }
-
-/* ---- HEADING ---- */
 h1 {
     text-align: center;
     font-size: 2rem;
-    color: #e94560; /* red/pink accent */
+    color: #e94560;
     margin-bottom: 30px;
 }
-
-/* ---- FIELDSET / FORM ---- */
 fieldset {
     border: none;
-    background-color: #16213e; /* slightly lighter than body */
+    background-color: #16213e;
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 24px;
 }
-
 legend {
     color: #e94560;
     font-size: 1.1rem;
     font-weight: bold;
     margin-bottom: 12px;
 }
-
-/* ---- LABELS ---- */
 label {
-    display: block; /* puts each label on its own line */
+    display: block;
     margin-top: 12px;
     margin-bottom: 4px;
     font-size: 0.9rem;
-    color: #a8a8b3; /* muted color for labels */
+    color: #a8a8b3;
 }
-
-/* ---- INPUTS ---- */
-input[type="time"] {
+input[type="time"],
+input[type="number"],
+select {
     width: 100%;
     padding: 10px;
     border-radius: 8px;
-    border: 1px solid #e9456033; /* subtle accent border */
-    background-color: #0f3460; /* dark blue input background */
+    border: 1px solid #e9456033;
+    background-color: #0f3460;
     color: #eaeaea;
     font-size: 1rem;
 }
-
-/* ---- BUTTON ---- */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+select option {
+    background-color: #0f3460;
+}
 button {
-    display: block; /* lets margin auto work for centering */
-    margin: 20px auto 0 auto;
-    padding: 12px 40px;
+    display: block;
+    margin: 0 auto 24px auto;
+    padding: 14px 40px;
     background-color: #e94560;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 1rem;
-    cursor: pointer; /* shows hand cursor on hover */
-}
-
-button:hover {
-    background-color: #c73652; /* slightly darker on hover */
-}
-
-/* ---- MEAL CARDS ---- */
-.meal-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    background-color: #16213e;
-    border-left: 4px solid #e94560; /* accent stripe on left */
-}
-
-.meal-label {
-    flex: 1;
-    text-align: left;
-    font-weight: bold;
-    color: #eaeaea;
-}
-
-.meal-time {
-    flex: 1;
-    text-align: center;
-    font-size: 1.2rem;
-    color: #e94560; /* accent color for the time */
-    font-weight: bold;
-}
-
-.meal-type {
-    flex: 1;
-    text-align: right;
-    font-size: 0.85rem;
-    color: #a8a8b3; /* muted, less important info */
-}
-
-/* ---- ERROR MESSAGE ---- */
-.error {
-    color: #e94560;
-    text-align: center;
-    padding: 12px;
-}
-
-label {
-    display: block;
-    margin-top: 16px;
-}
-
-input[type="time"] {
-    display: block;
+    cursor: pointer;
     width: 100%;
+    max-width: 300px;
 }
-
-#exerciseTimeContainer {
-    display: none; /* hidden by default */
+button:hover {
+    background-color: #c73652;
 }
-
 .checkbox-group {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-top: 16px;
 }
-
 .checkbox-group label {
-    margin: 0; /* override the block label margin */
+    margin: 0;
     color: #eaeaea;
     font-size: 0.95rem;
 }
-
 input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: #e94560; /* makes checkbox match your theme color */
+    accent-color: #e94560;
     cursor: pointer;
 }
-
+#exerciseTimeContainer {
+    display: none;
+}
+.meal-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    background-color: #16213e;
+    border-left: 4px solid #e94560;
+    cursor: pointer;
+}
+.meal-label {
+    flex: 1;
+    text-align: left;
+    font-weight: bold;
+    color: #eaeaea;
+}
+.meal-time {
+    flex: 1;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #e94560;
+    font-weight: bold;
+}
+.meal-type {
+    flex: 1;
+    text-align: right;
+    font-size: 0.85rem;
+    color: #a8a8b3;
+}
+.meal-calories {
+    background-color: #e9456022;
+    color: #e94560;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+    margin-left: 8px;
+}
 .meal-description {
     display: none;
     width: 100%;
@@ -163,11 +143,67 @@ input[type="checkbox"] {
     font-size: 0.85rem;
     color: #a8a8b3;
     line-height: 1.5;
+    border-top: 1px solid #e9456022;
+    padding-top: 10px;
 }
 .meal-card.expanded .meal-description {
     display: block;
 }
-.meal-card {
-    cursor: pointer;
-    flex-wrap: wrap; /* allows description to wrap to next line */
+.error {
+    color: #e94560;
+    text-align: center;
+    padding: 12px;
+}
+
+#summary {
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    background-color: #16213e;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    border-left: 4px solid #e94560;
+}
+
+.summary-title {
+    color: #e94560;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9456011;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+    margin-top: 8px;
+    padding-top: 12px;
+}
+
+.summary-label {
+    color: #a8a8b3;
+    font-size: 0.9rem;
+}
+
+.summary-value {
+    color: #eaeaea;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.summary-value.highlight {
+    color: #e94560;
+    font-size: 1.1rem;
+}
+
+.summary-value.green {
+    color: #4caf50;
 }
