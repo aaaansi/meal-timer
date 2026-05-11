@@ -121,3 +121,37 @@ button:hover {
     text-align: center;
     padding: 12px;
 }
+
+label {
+    display: block;
+    margin-top: 16px;
+}
+
+input[type="time"] {
+    display: block;
+    width: 100%;
+}
+
+#exerciseTimeContainer {
+    display: none; /* hidden by default */
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.checkbox-group label {
+    margin: 0; /* override the block label margin */
+    color: #eaeaea;
+    font-size: 0.95rem;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #e94560; /* makes checkbox match your theme color */
+    cursor: pointer;
+}

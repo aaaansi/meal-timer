@@ -6,19 +6,25 @@
     </head>
     <body>
         <div class="center">
-            <h1>When should you eat!</h1>
+            <h1>🍽️ Meal'o'Clock</h1>
             <fieldset>
                 <legend>Time</legend>
-                <div>
-                    <input type="checkbox" id="timeFormat" name="timeFormat" checked />
-                    <label for="timeFormat">12hour format</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="timeFormat"/>
+                    <label for="timeFormat">12 hour format</label>
                 </div>
                 <label for="wakeupTime">What time do you wake up?</label>
                 <input type="time" id="wakeupTime" name="wakeup time"/>
                 <label for="sleepTime">What time do you go to sleep?</label>
                 <input type="time" id="sleepTime" name="sleep time"/>
-                <label for="exerciseTime">What time do you exercise?</label>
-                <input type="time" id="exerciseTime" name="exercise time"/>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="exerciseToggle" />
+                    <label for="exerciseToggle">I exercise</label>
+                </div>
+                <div id="exerciseTimeContainer">
+                    <label for="exerciseTime">What time do you exercise?</label>
+                    <input type="time" id="exerciseTime" name="exercise time"/>
+                </div>
                 <button type="button" id="calculateButton">Calculate</button>
             </fieldset>
             <div id="results"></div>

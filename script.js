@@ -1,8 +1,17 @@
 const HOURS = 60;
 const MINUTESADAY = 1440;
 const results = document.getElementById("results");
-
-
+document.getElementById("exerciseToggle")
+    .addEventListener("change", function(){
+        const container = document.getElementById("exerciseTimeContainer");
+        if (this.checked){
+            container.style.display = "block";
+        } else {
+            container.style.display = "none";
+            document.getElementById("exerciseTime").value = "";
+            localStorage.removeItem("exerciseTime");
+        }
+    });
 function calculate() {
     // Read values at click time, not page load
     const inputElementWakeUpTime = document.getElementById("wakeupTime").value;
@@ -22,29 +31,31 @@ function calculate() {
         return;
     }
 
-    const bestTimeToEatBreakfast = minutesToTime(timeToMinutes(inputElementWakeUpTime) + 30);
-    const bestTimeToEatSnack = minutesToTime(timeToMinutes(inputElementWakeUpTime) + HOURS * 3);
-    const bestTimeToEatLunch = minutesToTime(timeToMinutes(inputElementWakeUpTime) + HOURS * 5);
-    const bestTimeToEatDinner = minutesToTime(timeToMinutes(inputElementSleepTime) - HOURS * 3);
-    const bestTimeToStopEating = minutesToTime(timeToMinutes(inputElementSleepTime) - HOURS * 2);
+    const wakeMinutes = timeToMinutes(inputElementWakeUpTime);
+    const sleepMinutes = timeToMinutes(inputElementSleepTime);
 
-    results.innerHTML = "";
-    createMealCard("🌅 Breakfast", bestTimeToEatBreakfast, "Heavy meal");
-    createMealCard("🍿 Snack", bestTimeToEatSnack, "Light meal");
-    createMealCard("☀️ Lunch", bestTimeToEatLunch, "Moderate meal");
-    createMealCard("🌄 Dinner", bestTimeToEatDinner, "Light meal");
-    createMealCard("🎑 Stop Eating", bestTimeToStopEating, "");
+    const meals = [
+        {label: "🌅 Breakfast", sortTime: wakeMinutes + 30, type: "Largest meal • High carbs + protein"},
+        {label: "🍿 Snack", sortTime: wakeMinutes + HOURS * 3, type: "Small • Fruits, nuts or yogurt"},
+        {label: "☀️ Lunch", sortTime: wakeMinutes + HOURS * 5, type: "Moderate • Balanced macros"},
+        {label: "🌄 Dinner", sortTime: sleepMinutes - HOURS * 3, type: "Small • Low carb, high protein"},
+        {label: "🎑 Stop Eating", sortTime: sleepMinutes - HOURS * 2, type: "⚠️ No food after this"},
+    ];
 
     if (validExerciseTime){
-        const bestTimetoEatpreWorkoutSnack = minutesToTime(timeToMinutes(inputElementExerciseTime) - HOURS);
-        const bestTimetoEatpreWorkoutMeal = minutesToTime(timeToMinutes(inputElementExerciseTime) - HOURS * 2.5);
-        const bestTimetoEatpostWorkout = minutesToTime(timeToMinutes(inputElementExerciseTime) + HOURS / 2);
-        const bestTimetoEatpreSleep = minutesToTime(timeToMinutes(inputElementSleepTime) - HOURS / 2);
-        createMealCard("⚡ Pre-workout snack", bestTimetoEatpreWorkoutSnack, "Light meal");
-        createMealCard("🍽️ Pre-workout meal", bestTimetoEatpreWorkoutMeal, "Heavy meal");
-        createMealCard("💪 Post workout", bestTimetoEatpostWorkout, "Recovery meal");
-        createMealCard("🌙 Pre sleep", bestTimetoEatpreSleep, "Casein protein");
+        const exerciseMinutes = timeToMinutes(inputElementExerciseTime);
+        meals.push(
+        {label: "🍽️ Pre-workout meal", sortTime: exerciseMinutes - HOURS * 3, type: "High carbs + moderate protein"},
+        {label: "⚡ Pre-workout snack", sortTime: exerciseMinutes - HOURS * 0.75, type: "Quick carbs • Banana, rice cakes"},
+        {label: "💪 Post workout", sortTime: exerciseMinutes + HOURS / 2, type: "Carbs + protein within 30 mins"},
+        {label: "🌙 Pre sleep", sortTime: sleepMinutes - HOURS / 2, type: "Casein only • Greek yogurt, cottage cheese"},
+        );
     }
+
+    meals.sort((a, b) => a.sortTime - b.sortTime);
+
+    results.innerHTML = "";
+    meals.forEach(meal => createMealCard(meal.label, minutesToTime(meal.sortTime), meal.type));
 
     saveTimes("wakeupTime", inputElementWakeUpTime);
     saveTimes("sleepTime", inputElementSleepTime);
@@ -91,12 +102,29 @@ function formatTime(hours, minutes){
 
 function saveTimes(inputId, inputTime){
     localStorage.setItem(`${inputId}`, `${inputTime}`);
+    localStorage.setItem("timeFormat", document.getElementById("timeFormat").checked);
+    localStorage.setItem("exerciseToggle", document.getElementById("exerciseToggle").checked);
 }
 
 function loadTimes(inputId){
-   const input = localStorage.getItem(`${inputId}`);
+    const input = localStorage.getItem(inputId);
     if (input){
-        document.getElementById(`${inputId}`).value = input;
+        document.getElementById(inputId).value = input;
+        if (inputId === "exerciseTime"){
+            document.getElementById("exerciseToggle").checked = true;
+            document.getElementById("exerciseTimeContainer").style.display = "block";
+        }
+    }
+    // load checkbox states
+    const savedFormat = localStorage.getItem("timeFormat");
+    if (savedFormat !== null){
+        document.getElementById("timeFormat").checked = savedFormat === "true";
+    }
+
+    const savedExercise = localStorage.getItem("exerciseToggle");
+    if (savedExercise === "true"){
+        document.getElementById("exerciseToggle").checked = true;
+        document.getElementById("exerciseTimeContainer").style.display = "block";
     }
 }
 
