@@ -290,3 +290,32 @@ input[type="checkbox"] {
     color: #a8a8b3;
     font-size: 0.85rem;
 }
+
+.meal-macros {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.macro {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.macro.protein {
+    background-color: #e9456022;
+    color: #e94560;
+}
+
+.macro.carbs {
+    background-color: #4caf5022;
+    color: #4caf50;
+}
+
+.macro.fat {
+    background-color: #ff980022;
+    color: #ff9800;
+}
