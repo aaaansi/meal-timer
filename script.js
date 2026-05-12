@@ -1,55 +1,170 @@
 const HOURS = 60;
 const MINUTESADAY = 1440;
-const results = document.getElementById("results");
+
+// ---- VIEW MANAGEMENT ----
+function showView(viewId){
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("settings").style.display = "none";
+    document.getElementById("firstTime").style.display = "none";
+    document.getElementById(viewId).style.display = "block";
+}
+
+// ---- EVENT LISTENERS ----
+document.getElementById("settingsButton")
+    .addEventListener("click", function(){
+        syncSettingsFromStorage();
+        showView("settings");
+    });
+
+document.getElementById("backButton")
+    .addEventListener("click", function(){
+        showView("dashboard");
+        calculate();
+    });
+
+document.getElementById("saveButton")
+    .addEventListener("click", function(){
+        saveFromSettings();
+        showView("dashboard");
+        calculate();
+    });
+
+document.getElementById("getStartedButton")
+    .addEventListener("click", function(){
+        if (!saveFromFirstTime()) return;
+        showView("dashboard");
+        calculate();
+    });
 
 document.getElementById("exerciseToggle")
     .addEventListener("change", function(){
-        const container = document.getElementById("exerciseTimeContainer");
-        if (this.checked){
-            container.style.display = "block";
-        } else {
-            container.style.display = "none";
+        document.getElementById("exerciseTimeContainer").style.display =
+            this.checked ? "block" : "none";
+        if (!this.checked){
             document.getElementById("exerciseTime").value = "";
             localStorage.removeItem("exerciseTime");
         }
     });
 
-results.addEventListener("click", function(e){
-    const card = e.target.closest(".meal-card");
-    if (card) card.classList.toggle("expanded");
-});
-
-document.addEventListener("click", function(e){
-    const card = e.target.closest(".collapsible");
-    if (card) card.classList.toggle("expanded");
-});
+document.getElementById("exerciseToggleFirst")
+    .addEventListener("change", function(){
+        document.getElementById("exerciseTimeContainerFirst").style.display =
+            this.checked ? "block" : "none";
+    });
 
 document.getElementById("profileToggle")
     .addEventListener("change", function(){
-        const container = document.getElementById("profileContainer");
-        if (this.checked){
-            container.style.display = "block";
-        } else {
-            container.style.display = "none";
-        }
+        document.getElementById("profileContainer").style.display =
+            this.checked ? "block" : "none";
     });
 
-function calculate() {
-    const inputElementWakeUpTime = document.getElementById("wakeupTime").value;
-    const inputElementSleepTime = document.getElementById("sleepTime").value;
-    const inputElementExerciseTime = document.getElementById("exerciseTime").value;
-    const validWakeUpTime = validateInputs(inputElementWakeUpTime);
-    const validSleepTime = validateInputs(inputElementSleepTime);
-    const validExerciseTime = validateInputs(inputElementExerciseTime);
-    if (!validWakeUpTime || !validSleepTime){
-        results.innerHTML = "<p class='error'>Please enter wake & sleep times!</p>";
-        return;
+document.getElementById("profileToggleFirst")
+    .addEventListener("change", function(){
+        document.getElementById("profileContainerFirst").style.display =
+            this.checked ? "block" : "none";
+    });
+
+document.addEventListener("click", function(e){
+    const collapsible = e.target.closest(".collapsible");
+    if (collapsible) collapsible.classList.toggle("expanded");
+
+    const scheduleItem = e.target.closest(".schedule-item");
+    if (scheduleItem){
+        scheduleItem.classList.toggle("expanded");
     }
-    const wakeMinutes = timeToMinutes(inputElementWakeUpTime);
-    let sleepMinutes = timeToMinutes(inputElementSleepTime);
+});
+
+// ---- SAVE / LOAD ----
+function saveFromFirstTime(){
+    const wake = document.getElementById("wakeupTimeFirst").value;
+    const sleep = document.getElementById("sleepTimeFirst").value;
+    if (!wake || !sleep){
+        alert("Please enter your wake and sleep times!");
+        return false;
+    }
+    localStorage.setItem("wakeupTime", wake);
+    localStorage.setItem("sleepTime", sleep);
+    localStorage.setItem("exerciseTime", document.getElementById("exerciseTimeFirst").value);
+    localStorage.setItem("timeFormat", document.getElementById("timeFormatFirst").checked);
+    localStorage.setItem("exerciseToggle", document.getElementById("exerciseToggleFirst").checked);
+    localStorage.setItem("profileToggle", document.getElementById("profileToggleFirst").checked);
+    localStorage.setItem("age", document.getElementById("ageFirst").value);
+    localStorage.setItem("weight", document.getElementById("weightFirst").value);
+    localStorage.setItem("height", document.getElementById("heightFirst").value);
+    localStorage.setItem("sex", document.getElementById("sexFirst").value);
+    localStorage.setItem("goal", document.getElementById("goalFirst").value);
+    localStorage.setItem("activity", document.getElementById("activityFirst").value);
+    localStorage.setItem("extraCalories", document.getElementById("extraCaloriesFirst").value);
+    return true;
+}
+
+function saveFromSettings(){
+    const wake = document.getElementById("wakeupTime").value;
+    const sleep = document.getElementById("sleepTime").value;
+    if (!wake || !sleep) return;
+    localStorage.setItem("wakeupTime", wake);
+    localStorage.setItem("sleepTime", sleep);
+    localStorage.setItem("exerciseTime", document.getElementById("exerciseTime").value);
+    localStorage.setItem("timeFormat", document.getElementById("timeFormat").checked);
+    localStorage.setItem("exerciseToggle", document.getElementById("exerciseToggle").checked);
+    localStorage.setItem("profileToggle", document.getElementById("profileToggle").checked);
+    localStorage.setItem("age", document.getElementById("age").value);
+    localStorage.setItem("weight", document.getElementById("weight").value);
+    localStorage.setItem("height", document.getElementById("height").value);
+    localStorage.setItem("sex", document.getElementById("sex").value);
+    localStorage.setItem("goal", document.getElementById("goal").value);
+    localStorage.setItem("activity", document.getElementById("activity").value);
+    localStorage.setItem("extraCalories", document.getElementById("extraCalories").value);
+}
+
+function syncSettingsFromStorage(){
+    const fields = {
+        "wakeupTime": "wakeupTime",
+        "sleepTime": "sleepTime",
+        "exerciseTime": "exerciseTime",
+        "age": "age",
+        "weight": "weight",
+        "height": "height",
+        "sex": "sex",
+        "goal": "goal",
+        "activity": "activity",
+        "extraCalories": "extraCalories"
+    };
+    Object.keys(fields).forEach(id => {
+        const saved = localStorage.getItem(fields[id]);
+        if (saved) document.getElementById(id).value = saved;
+    });
+
+    const timeFormat = localStorage.getItem("timeFormat");
+    if (timeFormat !== null)
+        document.getElementById("timeFormat").checked = timeFormat === "true";
+
+    const exerciseToggle = localStorage.getItem("exerciseToggle");
+    if (exerciseToggle === "true"){
+        document.getElementById("exerciseToggle").checked = true;
+        document.getElementById("exerciseTimeContainer").style.display = "block";
+    }
+
+    const profileToggle = localStorage.getItem("profileToggle");
+    if (profileToggle === "true"){
+        document.getElementById("profileToggle").checked = true;
+        document.getElementById("profileContainer").style.display = "block";
+    }
+}
+
+// ---- CALCULATE ----
+function calculate(){
+    const wakeupTime = localStorage.getItem("wakeupTime");
+    const sleepTime = localStorage.getItem("sleepTime");
+    if (!wakeupTime || !sleepTime) return;
+
+    const wakeMinutes = timeToMinutes(wakeupTime);
+    let sleepMinutes = timeToMinutes(sleepTime);
     if (sleepMinutes < wakeMinutes) sleepMinutes += MINUTESADAY;
+
     const tdeeData = calculateTDEE();
     const tdee = tdeeData ? tdeeData.target : null;
+
     const cal = {
         breakfast:       tdee ? Math.round(tdee * 0.30) : null,
         snack:           tdee ? Math.round(tdee * 0.10) : null,
@@ -60,6 +175,7 @@ function calculate() {
         postWorkout:     tdee ? Math.round(tdee * 0.15) : null,
         preSleep:        tdee ? Math.round(tdee * 0.05) : null,
     };
+
     const meals = [
         {label: "🌅 Breakfast", sortTime: wakeMinutes + 30, type: "Largest meal • High carbs + protein", description: "Eat within 30 mins of waking. Focus on complex carbs + protein. Oats, eggs, whole grain toast. Biggest meal — boosts metabolism and resets your circadian clock.", calories: cal.breakfast, macros: {carbs: 0.50, protein: 0.30, fat: 0.20}},
         {label: "🍿 Snack", sortTime: wakeMinutes + HOURS * 3, type: "Small • Fruits, nuts or yogurt", description: "Keep it small. Fruits, nuts, or Greek yogurt. Maintains blood sugar between meals and prevents overeating at lunch.", calories: cal.snack, macros: {carbs: 0.40, protein: 0.40, fat: 0.20}},
@@ -67,8 +183,11 @@ function calculate() {
         {label: "🌄 Dinner", sortTime: sleepMinutes - HOURS * 3, type: "Small • Low carb, high protein", description: "Keep it light and low carb. Focus on protein and vegetables. Heavy meals late disrupt sleep quality and fat metabolism.", calories: cal.dinner, macros: {carbs: 0.20, protein: 0.50, fat: 0.30}},
         {label: "🎑 Stop Eating", sortTime: sleepMinutes - HOURS * 2, type: "⚠️ No food after this", description: "Your body needs 2-3 hrs to digest before sleep. Eating after this raises blood glucose overnight and disrupts melatonin.", calories: null, macros: null},
     ];
-    if (validExerciseTime){
-        const exerciseMinutes = timeToMinutes(inputElementExerciseTime);
+
+    const exerciseTime = localStorage.getItem("exerciseTime");
+    const exerciseToggle = localStorage.getItem("exerciseToggle") === "true";
+    if (exerciseToggle && exerciseTime){
+        const exerciseMinutes = timeToMinutes(exerciseTime);
         meals.push(
             {label: "🍽️ Pre-workout meal", sortTime: exerciseMinutes - HOURS * 3, type: "High carbs + moderate protein", description: "Eat 2-3 hrs before. High complex carbs + moderate protein. Maximises glycogen stores for performance.", calories: cal.preWorkoutMeal, macros: {carbs: 0.60, protein: 0.25, fat: 0.15}},
             {label: "⚡ Pre-workout snack", sortTime: exerciseMinutes - HOURS * 0.75, type: "Quick carbs • Banana, rice cakes", description: "45 mins before. Quick carbs only — banana, rice cakes, energy gel. Easy to digest, fast energy.", calories: cal.preWorkoutSnack, macros: {carbs: 0.80, protein: 0.10, fat: 0.10}},
@@ -76,52 +195,110 @@ function calculate() {
             {label: "🌙 Pre sleep", sortTime: sleepMinutes - HOURS / 2, type: "Casein only • Greek yogurt, cottage cheese", description: "Casein protein only — Greek yogurt or cottage cheese. Slow digesting, feeds muscles overnight without spiking blood sugar.", calories: cal.preSleep, macros: {carbs: 0.10, protein: 0.80, fat: 0.10}},
         );
     }
+
     meals.sort((a, b) => a.sortTime - b.sortTime);
 
-    // ← renderStatus AFTER meals is defined and sorted
     const fastingData = calculateFastingWindow(wakeMinutes, sleepMinutes - HOURS * 2);
-    renderSummary(tdeeData, fastingData);
     renderStatus(meals);
-
-    results.innerHTML = "";
-    meals.forEach(meal => createMealCard(meal.label, minutesToTime(meal.sortTime), meal.type, meal.description, meal.calories, meal.macros));    saveTimes("wakeupTime", inputElementWakeUpTime);
-    saveTimes("sleepTime", inputElementSleepTime);
-    saveTimes("exerciseTime", inputElementExerciseTime);
-    saveProfile();
+    renderSchedule(meals);
+    renderSummary(tdeeData, fastingData);
 }
 
-function validateInputs(timeInput){
-    return timeInput !== "";
-}
-function createMealCard(label, time, mealType, description, calories, macros){
-    const calDisplay = calories ? `<span class="meal-calories">${calories} kcal</span>` : "";
-    
-    let macroDisplay = "";
-    if (calories && macros){
-        const protein = Math.round((calories * macros.protein) / 4);
-        const carbs   = Math.round((calories * macros.carbs) / 4);
-        const fat     = Math.round((calories * macros.fat) / 9);
-        macroDisplay = `
-            <div class="meal-macros">
-                <span class="macro protein">🥩 ${protein}g protein</span>
-                <span class="macro carbs">🌾 ${carbs}g carbs</span>
-                <span class="macro fat">🥑 ${fat}g fat</span>
-            </div>
-        `;
+// ---- RENDER STATUS ----
+function renderStatus(meals){
+    const now = new Date();
+    const currentMinutes = now.getHours() * HOURS + now.getMinutes();
+
+    let current = null;
+    let next = null;
+
+    for (let i = 0; i < meals.length; i++){
+        if (meals[i].sortTime <= currentMinutes){
+            current = meals[i];
+        } else {
+            next = meals[i];
+            break;
+        }
     }
+    if (!next) next = meals[0];
 
-    results.innerHTML += `<div class="meal-card">
-        <span class="meal-label">${label}</span>
-        <span class="meal-time">${time}</span>
-        <span class="meal-type">${mealType}</span>
-        ${calDisplay}
-        <div class="meal-description">
-            <p>${description}</p>
-            ${macroDisplay}
-        </div>
-    </div>`;
+    const minutesUntilNext = next
+        ? next.sortTime > currentMinutes
+            ? next.sortTime - currentMinutes
+            : (next.sortTime + MINUTESADAY) - currentMinutes
+        : null;
+
+    const hoursUntil = Math.floor(minutesUntilNext / HOURS);
+    const minsUntil = minutesUntilNext % HOURS;
+    const timeUntilText = hoursUntil > 0
+        ? `${hoursUntil} hr ${minsUntil} min`
+        : `${minsUntil} min`;
+
+    document.getElementById("currentMeal").textContent =
+        current ? current.label : "No meal window yet";
+    document.getElementById("currentDetails").textContent =
+        current ? current.type : "Your first meal window hasn't started yet";
+    document.getElementById("nextMeal").innerHTML =
+        next ? `Next: <span>${next.label}</span> at ${minutesToTime(next.sortTime)}` : "";
+    document.getElementById("countdown").textContent =
+        next ? `⏳ In ${timeUntilText}` : "";
 }
 
+// ---- RENDER SCHEDULE ----
+function renderSchedule(meals){
+    const now = new Date();
+    const currentMinutes = now.getHours() * HOURS + now.getMinutes();
+    const scheduleList = document.getElementById("scheduleList");
+    scheduleList.innerHTML = "";
+
+    const lastPastMeal = meals.filter(m => m.sortTime <= currentMinutes).slice(-1)[0];
+
+    meals.forEach(meal => {
+        const isCurrentMeal = meal === lastPastMeal;
+        const isPast = meal.sortTime < currentMinutes && !isCurrentMeal;
+
+        let className = "schedule-item";
+        if (isPast) className += " past";
+        if (isCurrentMeal) className += " current";
+
+        let macroHTML = "";
+        if (meal.calories && meal.macros){
+            const protein = Math.round((meal.calories * meal.macros.protein) / 4);
+            const carbs   = Math.round((meal.calories * meal.macros.carbs) / 4);
+            const fat     = Math.round((meal.calories * meal.macros.fat) / 9);
+            macroHTML = `
+                <div class="meal-macros">
+                    <span class="macro protein">🥩 ${protein}g protein</span>
+                    <span class="macro carbs">🌾 ${carbs}g carbs</span>
+                    <span class="macro fat">🥑 ${fat}g fat</span>
+                </div>
+            `;
+        }
+
+        const calorieText = meal.calories ? `${meal.calories} kcal` : "";
+
+        const item = document.createElement("div");
+        item.className = className;
+        item.innerHTML = `
+            <div class="schedule-dot"></div>
+            <div class="schedule-time">${minutesToTime(meal.sortTime)}</div>
+            <div class="schedule-label">${meal.label}</div>
+            <div class="schedule-calories">${calorieText}</div>
+        `;
+
+        const details = document.createElement("div");
+        details.className = "schedule-details";
+        details.innerHTML = `
+            <p>${meal.description}</p>
+            ${macroHTML}
+        `;
+
+        scheduleList.appendChild(item);
+        scheduleList.appendChild(details);
+    });
+}
+
+// ---- RENDER SUMMARY ----
 function renderSummary(tdeeData, fastingData){
     const summary = document.getElementById("summary");
     let html = "";
@@ -142,7 +319,7 @@ function renderSummary(tdeeData, fastingData){
             <div class="summary-header">
                 <div class="summary-title">📊 Calorie Breakdown</div>
                 <div class="summary-preview">
-                    <span class="summary-value highlight">${tdeeData.target} kcal daily target</span>
+                    <span class="summary-value highlight">${tdeeData.target} kcal</span>
                     <span class="collapse-icon">▼</span>
                 </div>
             </div>
@@ -185,7 +362,7 @@ function renderSummary(tdeeData, fastingData){
         <div class="summary-header">
             <div class="summary-title">⏱️ Fasting Window</div>
             <div class="summary-preview">
-                <span class="summary-value highlight">${fastingData.protocol} Intermittent Fast</span>
+                <span class="summary-value highlight">${fastingData.protocol} IF</span>
                 <span class="collapse-icon">▼</span>
             </div>
         </div>
@@ -208,16 +385,18 @@ function renderSummary(tdeeData, fastingData){
     summary.innerHTML = html;
 }
 
+// ---- TDEE ----
 function calculateTDEE(){
-    const age = parseInt(document.getElementById("age").value);
-    const weight = parseFloat(document.getElementById("weight").value);
-    const height = parseFloat(document.getElementById("height").value);
-    const sex = document.getElementById("sex").value;
-    const goal = document.getElementById("goal").value;
-    const activity = parseFloat(document.getElementById("activity").value);
-    const extraCalories = parseInt(document.getElementById("extraCalories").value) || 0;
-    const profileEnabled = document.getElementById("profileToggle").checked;
+    const profileEnabled = localStorage.getItem("profileToggle") === "true";
     if (!profileEnabled) return null;
+
+    const age    = parseInt(localStorage.getItem("age"));
+    const weight = parseFloat(localStorage.getItem("weight"));
+    const height = parseFloat(localStorage.getItem("height"));
+    const sex    = localStorage.getItem("sex") || "male";
+    const goal   = localStorage.getItem("goal") || "maintain";
+    const activity = parseFloat(localStorage.getItem("activity")) || 1.2;
+    const extraCalories = parseInt(localStorage.getItem("extraCalories")) || 0;
 
     if (!age || !weight || !height) return null;
 
@@ -230,8 +409,6 @@ function calculateTDEE(){
 
     const tdee = Math.round(bmr * activity);
     const netTDEE = tdee + extraCalories;
-    const maintenance = netTDEE;
-
     let target = netTDEE;
     if (goal === "lose") target -= 500;
     if (goal === "gain") target += 300;
@@ -240,25 +417,23 @@ function calculateTDEE(){
         bmr:         Math.round(bmr),
         tdee:        tdee,
         extraBurn:   extraCalories,
-        maintenance: maintenance,
+        maintenance: netTDEE,
         target:      target,
         goal:        goal
     };
 }
 
+// ---- FASTING ----
 function calculateFastingWindow(wakeMinutes, stopEatingMinutes){
     const breakfastTime = wakeMinutes + 30;
-    const eatingWindow = stopEatingMinutes - breakfastTime;
+    const eatingWindow  = stopEatingMinutes - breakfastTime;
     const fastingWindow = MINUTESADAY - eatingWindow;
-    const eatingHrs = Math.floor(eatingWindow / HOURS);
+    const eatingHrs  = Math.floor(eatingWindow / HOURS);
     const fastingHrs = Math.floor(fastingWindow / HOURS);
-    return {
-        eatingHrs,
-        fastingHrs,
-        protocol: `${fastingHrs}:${eatingHrs}`
-    };
+    return { eatingHrs, fastingHrs, protocol: `${fastingHrs}:${eatingHrs}` };
 }
 
+// ---- TIME UTILS ----
 function timeToMinutes(timeString){
     const timeArray = timeString.split(':');
     return parseInt(timeArray[0]) * HOURS + parseInt(timeArray[1]);
@@ -268,139 +443,25 @@ function minutesToTime(minutes){
     minutes = minutes < 0 ? minutes + MINUTESADAY : minutes;
     minutes = minutes % MINUTESADAY;
     const hours = String(Math.floor(minutes / HOURS)).padStart(2, '0');
-    const mins = String(minutes % HOURS).padStart(2, '0');
+    const mins  = String(minutes % HOURS).padStart(2, '0');
     return formatTime(hours, mins);
 }
 
 function formatTime(hours, minutes){
-    const is12Hour = document.getElementById("timeFormat").checked;
+    const is12Hour = localStorage.getItem("timeFormat") === "true";
     const h = parseInt(hours);
     if (is12Hour){
         const ampm = h >= 12 ? "PM" : "AM";
-        const h12 = h % 12 || 12;
+        const h12  = h % 12 || 12;
         return `${h12}:${minutes} ${ampm}`;
     }
     return `${hours}:${minutes}`;
 }
 
-function saveTimes(inputId, inputTime){
-    localStorage.setItem(inputId, inputTime);
-    localStorage.setItem("timeFormat", document.getElementById("timeFormat").checked);
-    localStorage.setItem("exerciseToggle", document.getElementById("exerciseToggle").checked);
+// ---- INIT ----
+if (localStorage.getItem("wakeupTime") && localStorage.getItem("sleepTime")){
+    showView("dashboard");
+    calculate();
+} else {
+    showView("firstTime");
 }
-
-function saveProfile(){
-    localStorage.setItem("profileToggle", document.getElementById("profileToggle").checked);
-    localStorage.setItem("age", document.getElementById("age").value);
-    localStorage.setItem("weight", document.getElementById("weight").value);
-    localStorage.setItem("height", document.getElementById("height").value);
-    localStorage.setItem("sex", document.getElementById("sex").value);
-    localStorage.setItem("goal", document.getElementById("goal").value);
-    localStorage.setItem("activity", document.getElementById("activity").value);
-    localStorage.setItem("extraCalories", document.getElementById("extraCalories").value);
-}
-
-function loadProfile(){
-    const fields = ["age", "weight", "height", "sex", "goal", "activity", "extraCalories"];
-    fields.forEach(field => {
-        const saved = localStorage.getItem(field);
-        if (saved) document.getElementById(field).value = saved;
-    });
-}
-
-function loadTimes(inputId){
-    const input = localStorage.getItem(inputId);
-    if (input){
-        document.getElementById(inputId).value = input;
-        if (inputId === "exerciseTime"){
-            document.getElementById("exerciseToggle").checked = true;
-            document.getElementById("exerciseTimeContainer").style.display = "block";
-        }
-    }
-    const savedFormat = localStorage.getItem("timeFormat");
-    if (savedFormat !== null){
-        document.getElementById("timeFormat").checked = savedFormat === "true";
-    }
-    const savedExercise = localStorage.getItem("exerciseToggle");
-    if (savedExercise === "true"){
-        document.getElementById("exerciseToggle").checked = true;
-        document.getElementById("exerciseTimeContainer").style.display = "block";
-    }
-}
-
-function getCurrentStatus(meals){
-    const now = new Date();
-    const currentMinutes = now.getHours() * HOURS + now.getMinutes();
-
-    let current = null;
-    let next = null;
-
-    for (let i = 0; i < meals.length; i++){
-        if (meals[i].sortTime <= currentMinutes){
-            current = meals[i];
-        } else {
-            next = meals[i];
-            break;
-        }
-    }
-
-    // Handle case where we're past all meals for the day
-    if (!next) next = meals[0];
-
-    const minutesUntilNext = next
-        ? next.sortTime > currentMinutes
-            ? next.sortTime - currentMinutes
-            : (next.sortTime + MINUTESADAY) - currentMinutes
-        : null;
-
-    const hoursUntil = Math.floor(minutesUntilNext / HOURS);
-    const minsUntil = minutesUntilNext % HOURS;
-
-    const timeUntilText = hoursUntil > 0
-        ? `${hoursUntil} hr ${minsUntil} min`
-        : `${minsUntil} min`;
-
-    return { current, next, timeUntilText };
-}
-
-function renderStatus(meals){
-    const { current, next, timeUntilText } = getCurrentStatus(meals);
-    const summary = document.getElementById("summary");
-
-    const currentText = current
-        ? `You're in your <strong>${current.label}</strong> window`
-        : `No meal window active yet today`;
-
-    const statusHTML = `
-        <div class="status-card">
-            <div class="status-title">🕐 Right Now</div>
-            <div class="status-current">${currentText}</div>
-            ${next ? `
-            <div class="status-next">
-                <span>Next: ${next.label}</span>
-                <span class="status-time">${minutesToTime(next.sortTime)}</span>
-            </div>
-            <div class="status-countdown">⏳ In ${timeUntilText}</div>
-            ` : ""}
-        </div>
-    `;
-
-    summary.innerHTML = statusHTML + summary.innerHTML;
-}
-
-function loadProfile(){
-    const fields = ["age", "weight", "height", "sex", "goal", "activity", "extraCalories"];
-    fields.forEach(field => {
-        const saved = localStorage.getItem(field);
-        if (saved) document.getElementById(field).value = saved;
-    });
-}
-
-if (localStorage.length > 0){
-    loadTimes("wakeupTime");
-    loadTimes("sleepTime");
-    loadTimes("exerciseTime");
-    loadProfile();
-}
-
-document.getElementById("calculateButton").addEventListener("click", calculate);

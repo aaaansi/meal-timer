@@ -5,66 +5,170 @@
         <title>Meal'o'Clock</title>
     </head>
     <body>
-        <div class="center">
-            <h1>🍽️ Meal'o'Clock</h1>
-            <fieldset>
-                <legend>Time</legend>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="timeFormat"/>
-                    <label for="timeFormat">12 hour format</label>
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard" style="display:none">
+            <div class="center">
+                <div class="app-header">
+                    <h1>🍽️ Meal'o'Clock</h1>
+                    <button id="settingsButton" class="icon-button">⚙️</button>
                 </div>
-                <label for="wakeupTime">What time do you wake up?</label>
-                <input type="time" id="wakeupTime" name="wakeup time"/>
-                <label for="sleepTime">What time do you go to sleep?</label>
-                <input type="time" id="sleepTime" name="sleep time"/>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="exerciseToggle" />
-                    <label for="exerciseToggle">I exercise</label>
+
+                <!-- RIGHT NOW CARD -->
+                <div id="statusCard" class="status-card-large">
+                    <div class="status-label">🕐 RIGHT NOW</div>
+                    <div id="currentMeal" class="current-meal-name"></div>
+                    <div id="currentDetails" class="current-meal-details"></div>
+                    <div id="nextMeal" class="next-meal"></div>
+                    <div id="countdown" class="countdown"></div>
                 </div>
-                <div id="exerciseTimeContainer">
-                    <label for="exerciseTime">What time do you exercise?</label>
-                    <input type="time" id="exerciseTime" name="exercise time"/>
-                </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="profileToggle"/>
-                    <label for="profileToggle">Add my profile for calorie guidance</label>
-                </div>
-            </fieldset>
-            <div id="profileContainer">
-                <fieldset>
-                    <legend>Your Profile</legend>
-                    <label for="age">Age</label>
-                    <input type="number" id="age" placeholder="25" min="10" max="100"/>
-                    <label for="weight">Weight (kg)</label>
-                    <input type="number" id="weight" placeholder="70" min="30" max="300"/>
-                    <label for="height">Height (cm)</label>
-                    <input type="number" id="height" placeholder="170" min="100" max="250"/>
-                    <label for="sex">Sex</label>
-                    <select id="sex">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select>
-                    <label for="goal">Goal</label>
-                    <select id="goal">
-                        <option value="lose">Lose weight (-500 cal)</option>
-                        <option value="maintain">Maintain weight</option>
-                        <option value="gain">Build muscle (+300 cal)</option>
-                    </select>
-                    <label for="activity">Activity Level</label>
-                    <select id="activity">
-                        <option value="1.2">Sedentary (no exercise)</option>
-                        <option value="1.375">Lightly active (1-3x/week)</option>
-                        <option value="1.55">Moderately active (3-5x/week)</option>
-                        <option value="1.725">Very active (6-7x/week)</option>
-                    </select>
-                    <label for="extraCalories">Extra calories burned (Mi Band)</label>
-                    <input type="number" id="extraCalories" placeholder="0" min="0" max="3000"/>
-                </fieldset>
+
+                <!-- TODAY'S SCHEDULE -->
+                <div class="schedule-header">Today's Schedule</div>
+                <div id="scheduleList"></div>
+
+                <!-- SUMMARY CARDS -->
+                <div id="summary"></div>
             </div>
-            <button type="button" id="calculateButton">Calculate</button>
-            <div id="summary"></div>
-            <div id="results"></div>
         </div>
+
+        <!-- SETTINGS VIEW -->
+        <div id="settings" style="display:none">
+            <div class="center">
+                <div class="app-header">
+                    <button id="backButton" class="icon-button">← Back</button>
+                    <h2 class="settings-title">⚙️ Settings</h2>
+                </div>
+
+                <fieldset>
+                    <legend>Time</legend>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="timeFormat"/>
+                        <label for="timeFormat">12 hour format</label>
+                    </div>
+                    <label for="wakeupTime">What time do you wake up?</label>
+                    <input type="time" id="wakeupTime" name="wakeup time"/>
+                    <label for="sleepTime">What time do you go to sleep?</label>
+                    <input type="time" id="sleepTime" name="sleep time"/>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="exerciseToggle"/>
+                        <label for="exerciseToggle">I exercise</label>
+                    </div>
+                    <div id="exerciseTimeContainer">
+                        <label for="exerciseTime">What time do you exercise?</label>
+                        <input type="time" id="exerciseTime" name="exercise time"/>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="profileToggle"/>
+                        <label for="profileToggle">Add my profile for calorie guidance</label>
+                    </div>
+                </fieldset>
+
+                <div id="profileContainer">
+                    <fieldset>
+                        <legend>Your Profile</legend>
+                        <label for="age">Age</label>
+                        <input type="number" id="age" placeholder="25" min="10" max="100"/>
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" placeholder="70" min="30" max="300"/>
+                        <label for="height">Height (cm)</label>
+                        <input type="number" id="height" placeholder="170" min="100" max="250"/>
+                        <label for="sex">Sex</label>
+                        <select id="sex">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                        <label for="goal">Goal</label>
+                        <select id="goal">
+                            <option value="lose">Lose weight (-500 cal)</option>
+                            <option value="maintain">Maintain weight</option>
+                            <option value="gain">Build muscle (+300 cal)</option>
+                        </select>
+                        <label for="activity">Activity Level</label>
+                        <select id="activity">
+                            <option value="1.2">Sedentary (no exercise)</option>
+                            <option value="1.375">Lightly active (1-3x/week)</option>
+                            <option value="1.55">Moderately active (3-5x/week)</option>
+                            <option value="1.725">Very active (6-7x/week)</option>
+                        </select>
+                        <label for="extraCalories">Extra calories burned (Mi Band)</label>
+                        <input type="number" id="extraCalories" placeholder="0" min="0" max="3000"/>
+                    </fieldset>
+                </div>
+
+                <button type="button" id="saveButton">Save & Return</button>
+            </div>
+        </div>
+
+        <!-- FIRST TIME VIEW -->
+        <div id="firstTime">
+            <div class="center">
+                <div class="onboarding">
+                    <h1>🍽️ Meal'o'Clock</h1>
+                    <p class="onboarding-subtitle">
+                        Research-backed meal timing for better energy, sleep and performance
+                    </p>
+
+                    <fieldset>
+                        <legend>Time</legend>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="timeFormatFirst"/>
+                            <label for="timeFormatFirst">12 hour format</label>
+                        </div>
+                        <label for="wakeupTimeFirst">What time do you wake up?</label>
+                        <input type="time" id="wakeupTimeFirst"/>
+                        <label for="sleepTimeFirst">What time do you go to sleep?</label>
+                        <input type="time" id="sleepTimeFirst"/>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="exerciseToggleFirst"/>
+                            <label for="exerciseToggleFirst">I exercise</label>
+                        </div>
+                        <div id="exerciseTimeContainerFirst" style="display:none">
+                            <label for="exerciseTimeFirst">What time do you exercise?</label>
+                            <input type="time" id="exerciseTimeFirst"/>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="profileToggleFirst"/>
+                            <label for="profileToggleFirst">Add my profile for calorie guidance</label>
+                        </div>
+                    </fieldset>
+
+                    <div id="profileContainerFirst" style="display:none">
+                        <fieldset>
+                            <legend>Your Profile</legend>
+                            <label for="ageFirst">Age</label>
+                            <input type="number" id="ageFirst" placeholder="25" min="10" max="100"/>
+                            <label for="weightFirst">Weight (kg)</label>
+                            <input type="number" id="weightFirst" placeholder="70" min="30" max="300"/>
+                            <label for="heightFirst">Height (cm)</label>
+                            <input type="number" id="heightFirst" placeholder="170" min="100" max="250"/>
+                            <label for="sexFirst">Sex</label>
+                            <select id="sexFirst">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            <label for="goalFirst">Goal</label>
+                            <select id="goalFirst">
+                                <option value="lose">Lose weight (-500 cal)</option>
+                                <option value="maintain">Maintain weight</option>
+                                <option value="gain">Build muscle (+300 cal)</option>
+                            </select>
+                            <label for="activityFirst">Activity Level</label>
+                            <select id="activityFirst">
+                                <option value="1.2">Sedentary (no exercise)</option>
+                                <option value="1.375">Lightly active (1-3x/week)</option>
+                                <option value="1.55">Moderately active (3-5x/week)</option>
+                                <option value="1.725">Very active (6-7x/week)</option>
+                            </select>
+                            <label for="extraCaloriesFirst">Extra calories burned (Mi Band)</label>
+                            <input type="number" id="extraCaloriesFirst" placeholder="0" min="0" max="3000"/>
+                        </fieldset>
+                    </div>
+
+                    <button type="button" id="getStartedButton">Get Started →</button>
+                </div>
+            </div>
+        </div>
+
         <script src="script.js"></script>
     </body>
 </html>
