@@ -9,7 +9,7 @@
         <div id="dashboard" style="display:none">
             <div class="center">
                 <div class="app-header">
-                    <h1>🍽️ Meal'o'Clock</h1>
+                    <h1 id="appTitle" style="cursor: pointer;">🍽️ Meal'o'Clock</h1>
                     <button id="settingsButton" class="icon-button">⚙️</button>
                 </div>
 
@@ -103,68 +103,38 @@
         <div id="firstTime">
             <div class="center">
                 <div class="onboarding">
-                    <h1>🍽️ Meal'o'Clock</h1>
+                    <div class="onboarding-icon">🍽️</div>
+                    <h1>Meal'o'Clock</h1>
                     <p class="onboarding-subtitle">
                         Research-backed meal timing for better energy, sleep and performance
                     </p>
 
-                    <fieldset>
-                        <legend>Time</legend>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="timeFormatFirst"/>
-                            <label for="timeFormatFirst">12 hour format</label>
+                    <div class="onboarding-steps">
+                        <div class="onboarding-step">
+                            <div class="step-number">1</div>
+                            <div class="step-text">Tell us when you wake up and sleep</div>
                         </div>
-                        <label for="wakeupTimeFirst">What time do you wake up?</label>
-                        <input type="time" id="wakeupTimeFirst"/>
-                        <label for="sleepTimeFirst">What time do you go to sleep?</label>
-                        <input type="time" id="sleepTimeFirst"/>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="exerciseToggleFirst"/>
-                            <label for="exerciseToggleFirst">I exercise</label>
+                        <div class="onboarding-step">
+                            <div class="step-number">2</div>
+                            <div class="step-text">Get your personalised meal schedule</div>
                         </div>
-                        <div id="exerciseTimeContainerFirst" style="display:none">
-                            <label for="exerciseTimeFirst">What time do you exercise?</label>
-                            <input type="time" id="exerciseTimeFirst"/>
+                        <div class="onboarding-step">
+                            <div class="step-number">3</div>
+                            <div class="step-text">Know exactly what to eat and when</div>
                         </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="profileToggleFirst"/>
-                            <label for="profileToggleFirst">Add my profile for calorie guidance</label>
-                        </div>
-                    </fieldset>
+                    </div>
 
-                    <div id="profileContainerFirst" style="display:none">
-                        <fieldset>
-                            <legend>Your Profile</legend>
-                            <label for="ageFirst">Age</label>
-                            <input type="number" id="ageFirst" placeholder="25" min="10" max="100"/>
-                            <label for="weightFirst">Weight (kg)</label>
-                            <input type="number" id="weightFirst" placeholder="70" min="30" max="300"/>
-                            <label for="heightFirst">Height (cm)</label>
-                            <input type="number" id="heightFirst" placeholder="170" min="100" max="250"/>
-                            <label for="sexFirst">Sex</label>
-                            <select id="sexFirst">
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                            <label for="goalFirst">Goal</label>
-                            <select id="goalFirst">
-                                <option value="lose">Lose weight (-500 cal)</option>
-                                <option value="maintain">Maintain weight</option>
-                                <option value="gain">Build muscle (+300 cal)</option>
-                            </select>
-                            <label for="activityFirst">Activity Level</label>
-                            <select id="activityFirst">
-                                <option value="1.2">Sedentary (no exercise)</option>
-                                <option value="1.375">Lightly active (1-3x/week)</option>
-                                <option value="1.55">Moderately active (3-5x/week)</option>
-                                <option value="1.725">Very active (6-7x/week)</option>
-                            </select>
-                            <label for="extraCaloriesFirst">Extra calories burned (Mi Band)</label>
-                            <input type="number" id="extraCaloriesFirst" placeholder="0" min="0" max="3000"/>
-                        </fieldset>
+                    <div class="onboarding-form">
+                        <label for="wakeupTimeFirst">⏰ Wake up time</label>
+                        <input type="time" id="wakeupTimeFirst"/>
+                        <label for="sleepTimeFirst">🌙 Sleep time</label>
+                        <input type="time" id="sleepTimeFirst"/>
                     </div>
 
                     <button type="button" id="getStartedButton">Get Started →</button>
+                    <p class="onboarding-hint">
+                        You can add exercise times and calorie tracking in settings later
+                    </p>
                 </div>
             </div>
         </div>

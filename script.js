@@ -46,33 +46,25 @@ document.getElementById("exerciseToggle")
         }
     });
 
-document.getElementById("exerciseToggleFirst")
-    .addEventListener("change", function(){
-        document.getElementById("exerciseTimeContainerFirst").style.display =
-            this.checked ? "block" : "none";
-    });
-
-document.getElementById("profileToggle")
-    .addEventListener("change", function(){
-        document.getElementById("profileContainer").style.display =
-            this.checked ? "block" : "none";
-    });
-
-document.getElementById("profileToggleFirst")
-    .addEventListener("change", function(){
-        document.getElementById("profileContainerFirst").style.display =
-            this.checked ? "block" : "none";
-    });
-
 document.addEventListener("click", function(e){
     const collapsible = e.target.closest(".collapsible");
-    if (collapsible) collapsible.classList.toggle("expanded");
-
-    const scheduleItem = e.target.closest(".schedule-item");
-    if (scheduleItem){
-        scheduleItem.classList.toggle("expanded");
+    if (collapsible){
+        collapsible.classList.toggle("expanded");
+    } else {
+        const scheduleItem = e.target.closest(".schedule-item");
+        if (scheduleItem) scheduleItem.classList.toggle("expanded");
     }
 });
+
+document.getElementById("appTitle")
+    .addEventListener("click", function(){
+        // pre-fill onboarding inputs with saved values
+        const wake = localStorage.getItem("wakeupTime");
+        const sleep = localStorage.getItem("sleepTime");
+        if (wake) document.getElementById("wakeupTimeFirst").value = wake;
+        if (sleep) document.getElementById("sleepTimeFirst").value = sleep;
+        showView("firstTime");
+    });
 
 // ---- SAVE / LOAD ----
 function saveFromFirstTime(){
@@ -84,17 +76,6 @@ function saveFromFirstTime(){
     }
     localStorage.setItem("wakeupTime", wake);
     localStorage.setItem("sleepTime", sleep);
-    localStorage.setItem("exerciseTime", document.getElementById("exerciseTimeFirst").value);
-    localStorage.setItem("timeFormat", document.getElementById("timeFormatFirst").checked);
-    localStorage.setItem("exerciseToggle", document.getElementById("exerciseToggleFirst").checked);
-    localStorage.setItem("profileToggle", document.getElementById("profileToggleFirst").checked);
-    localStorage.setItem("age", document.getElementById("ageFirst").value);
-    localStorage.setItem("weight", document.getElementById("weightFirst").value);
-    localStorage.setItem("height", document.getElementById("heightFirst").value);
-    localStorage.setItem("sex", document.getElementById("sexFirst").value);
-    localStorage.setItem("goal", document.getElementById("goalFirst").value);
-    localStorage.setItem("activity", document.getElementById("activityFirst").value);
-    localStorage.setItem("extraCalories", document.getElementById("extraCaloriesFirst").value);
     return true;
 }
 

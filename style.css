@@ -439,3 +439,89 @@ input[type="checkbox"] {
     text-align: center;
     padding: 12px;
 }
+.onboarding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 20px;
+}
+
+.onboarding-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+}
+
+.onboarding h1 {
+    font-size: 2.5rem;
+    color: #e94560;
+    margin-bottom: 12px;
+}
+
+.onboarding-subtitle {
+    color: #a8a8b3;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 400px;
+    margin-bottom: 40px;
+}
+
+.onboarding-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.onboarding-step {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: #16213e;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #e94560;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.step-text {
+    color: #eaeaea;
+    font-size: 0.95rem;
+}
+
+.onboarding-form {
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+    margin-bottom: 24px;
+}
+
+.onboarding-form label {
+    color: #a8a8b3;
+    font-size: 0.9rem;
+    margin-top: 16px;
+    margin-bottom: 4px;
+}
+
+.onboarding-hint {
+    color: #a8a8b350;
+    font-size: 0.8rem;
+    margin-top: 16px;
+    max-width: 300px;
+    line-height: 1.5;
+}
