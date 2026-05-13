@@ -168,71 +168,92 @@
                 <div class="center">
                     <h2 class="view-title">⚙️ Settings</h2>
 
-                    <fieldset>
-                        <legend>Time</legend>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="timeFormat"/>
-                            <label for="timeFormat">12 hour format</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="lightMode"/>
-                            <label for="lightMode">Light mode</label>
-                        </div>
-                        <label for="goalSelect">Your goal</label>
-                        <select id="goalSelect">
-                            <option value="lose">⚖️ Lose Weight</option>
-                            <option value="energy">⚡ More Energy</option>
-                            <option value="sleep">😴 Better Sleep</option>
-                            <option value="muscle">💪 Build Muscle</option>
-                        </select>
-                        <label for="wakeupTime">What time do you wake up?</label>
-                        <input type="time" id="wakeupTime"/>
-                        <label for="sleepTime">What time do you go to sleep?</label>
-                        <input type="time" id="sleepTime"/>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="exerciseToggle"/>
-                            <label for="exerciseToggle">I exercise</label>
-                        </div>
-                        <div id="exerciseTimeContainer">
-                            <label for="exerciseTime">What time do you exercise?</label>
-                            <input type="time" id="exerciseTime"/>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="profileToggle"/>
-                            <label for="profileToggle">Add my profile for calorie guidance</label>
-                        </div>
-                    </fieldset>
+            <fieldset>
+                <legend>Preferences</legend>
 
-                    <div id="profileContainer">
-                        <fieldset>
-                            <legend>Your Profile</legend>
-                            <label for="age">Age</label>
-                            <input type="number" id="age" placeholder="25" min="10" max="100"/>
-                            <label for="weight">Weight (kg)</label>
-                            <input type="number" id="weight" placeholder="70" min="30" max="300"/>
-                            <label for="height">Height (cm)</label>
-                            <input type="number" id="height" placeholder="170" min="100" max="250"/>
-                            <label for="sex">Sex</label>
-                            <select id="sex">
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                            <label for="activity">Activity Level</label>
-                            <select id="activity">
-                                <option value="1.2">Sedentary (no exercise)</option>
-                                <option value="1.375">Lightly active (1-3x/week)</option>
-                                <option value="1.55">Moderately active (3-5x/week)</option>
-                                <option value="1.725">Very active (6-7x/week)</option>
-                            </select>
-                            <label for="extraCalories">Extra calories burned (Mi Band)</label>
-                            <input type="number" id="extraCalories" placeholder="0" min="0" max="3000"/>
-                        </fieldset>
-                    </div>
+                <div class="toggle-group">
+                    <span class="toggle-label">🕐 12 hour format</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="timeFormat"/>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
 
-                    <button type="button" id="saveButton">Save Settings</button>
-                    <button type="button" id="resetButton" class="reset-button">
-                        Reset & Start Over
-                    </button>
+                <div class="toggle-group">
+                    <span class="toggle-label">☀️ Light mode</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="lightMode"/>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <span class="toggle-label">🏋️ I exercise</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="exerciseToggle"/>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <span class="toggle-label">📊 Calorie & macro guidance</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="profileToggle"/>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <label for="goalSelect">Your goal</label>
+                <select id="goalSelect">
+                    <option value="lose">⚖️ Lose Weight</option>
+                    <option value="energy">⚡ More Energy</option>
+                    <option value="sleep">😴 Better Sleep</option>
+                    <option value="muscle">💪 Build Muscle</option>
+                </select>
+
+                <label for="wakeupTime">Wake up time</label>
+                <input type="time" id="wakeupTime"/>
+
+                <label for="sleepTime">Sleep time</label>
+                <input type="time" id="sleepTime"/>
+
+                <div id="exerciseTimeContainer">
+                    <label for="exerciseTime">Exercise time</label>
+                    <input type="time" id="exerciseTime"/>
+                </div>
+
+            </fieldset>
+
+            <div id="profileContainer">
+                <fieldset>
+                    <legend>Your Profile</legend>
+                    <label for="age">Age</label>
+                    <input type="number" id="age" placeholder="25" min="10" max="100"/>
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" placeholder="70" min="30" max="300"/>
+                    <label for="height">Height (cm)</label>
+                    <input type="number" id="height" placeholder="170" min="100" max="250"/>
+                    <label for="sex">Sex</label>
+                    <select id="sex">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                    <label for="activity">Activity Level</label>
+                    <select id="activity">
+                        <option value="1.2">Sedentary (no exercise)</option>
+                        <option value="1.375">Lightly active (1-3x/week)</option>
+                        <option value="1.55">Moderately active (3-5x/week)</option>
+                        <option value="1.725">Very active (6-7x/week)</option>
+                    </select>
+                    <label for="extraCalories">Extra calories burned (Mi Band)</label>
+                    <input type="number" id="extraCalories" placeholder="0" min="0" max="3000"/>
+                </fieldset>
+            </div>
+
+            <button type="button" id="saveButton">Save Settings</button>
+            <button type="button" id="resetButton" class="reset-button">
+                Reset & Start Over
+            </button>
                 </div>
             </div>
 
@@ -270,6 +291,10 @@
                 <button class="nav-item" data-view="settingsView">
                     <span class="nav-icon">⚙️</span>
                     <span class="nav-label">Settings</span>
+                </button>
+                <button class="nav-item" id="feedbackButton">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-label">Feedback</span>
                 </button>
             </nav>
         </div>

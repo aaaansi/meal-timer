@@ -591,15 +591,17 @@ const foodSuggestions = {
 
 function getMealKey(label){
     const map = {
-        "🌅 Breakfast":        "breakfast",
-        "🍿 Snack":            "snack",
-        "☀️ Lunch":            "lunch",
-        "🌄 Dinner":           "dinner",
-        "🎑 Stop Eating":      "stop",
-        "🍽️ Pre-workout meal": "preWorkoutMeal",
-        "⚡ Pre-workout snack": "preWorkoutSnack",
-        "💪 Post workout":     "postWorkout",
-        "🌙 Pre sleep":        "preSleep"
+        "🌅 Breakfast":          "breakfast",
+        "🍿 Snack":              "snack",
+        "🫐 Afternoon Snack":    "snack",  
+        "🌅 Light Meal":         "breakfast",
+        "☀️ Lunch":             "lunch",
+        "🌄 Dinner":             "dinner",
+        "🎑 Stop Eating":        "stop",
+        "🍽️ Pre-workout meal":  "preWorkoutMeal",
+        "⚡ Pre-workout snack":  "preWorkoutSnack",
+        "💪 Post workout":       "postWorkout",
+        "🌙 Pre sleep":          "preSleep"
     };
     return map[label] || null;
 }
@@ -611,14 +613,21 @@ function getFoodSuggestions(mealLabel, goal){
     const suggestions = foodSuggestions[key]?.[goal];
     if (!suggestions) return "";
 
+    const isStop = key === "stop";
+
+    const eatTitle   = isStop ? "🍵 Wind down with:"        : "💡 What to eat:";
+    const avoidTitle = isStop ? "🚫 Avoid before sleep:"    : "⚠️ Avoid:";
+    const eatClass   = isStop ? "food-section-title wind-down-title" : "food-section-title";
+
     const eatList   = suggestions.eat.map(f   => `<li class="food-eat">✓ ${f}</li>`).join("");
     const avoidList = suggestions.avoid.map(f => `<li class="food-avoid">✗ ${f}</li>`).join("");
 
     return `
         <div class="food-suggestions">
-            <div class="food-section-title">💡 What to eat:</div>
+            ${isStop ? '<div class="stop-eating-banner">⏰ Your fasting window has begun</div>' : ""}
+            <div class="${eatClass}">${eatTitle}</div>
             <ul class="food-list">${eatList}</ul>
-            <div class="food-section-title avoid-title">⚠️ Avoid:</div>
+            <div class="food-section-title avoid-title">${avoidTitle}</div>
             <ul class="food-list">${avoidList}</ul>
         </div>
     `;

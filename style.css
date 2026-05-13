@@ -1557,3 +1557,134 @@ body.light-mode .macro-bar-container {
     margin-top: 6px;
     font-style: italic;
 }
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #16213e;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #e9456022;
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: transparent;
+    border: none;
+    color: #a8a8b3;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    width: auto;
+    margin: 0;
+    font-size: 0.75rem;
+    flex: 1;
+}
+
+.nav-icon {
+    font-size: 1.2rem;
+}
+
+.nav-label {
+    font-size: 0.65rem;
+}
+/* ---- TOGGLE SWITCH ---- */
+.toggle-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e9456011;
+}
+
+.toggle-group:last-of-type {
+    border-bottom: none;
+}
+
+.toggle-label {
+    font-size: 0.95rem;
+    color: #eaeaea;
+}
+
+body.light-mode .toggle-label {
+    color: #1a1a2e;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #0f3460;
+    border-radius: 26px;
+    transition: 0.2s;
+    border: 1px solid #e9456033;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #a8a8b3;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: #e9456033;
+    border-color: #e94560;
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(22px);
+    background-color: #e94560;
+}
+
+body.light-mode .toggle-slider {
+    background-color: #dde0f0;
+}
+
+body.light-mode .toggle-switch input:checked + .toggle-slider {
+    background-color: #e9456022;
+}
+.stop-eating-banner {
+    background-color: #e9456022;
+    border: 1px solid #e9456044;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    color: #e94560;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.wind-down-title {
+    color: #4caf50;
+}

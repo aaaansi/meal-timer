@@ -17,6 +17,7 @@ function showView(viewId){
         btn.classList.toggle("active", btn.dataset.view === viewId);
     });
 }
+
 function showApp(){
     document.getElementById("firstTime").style.display  = "none";
     document.getElementById("mainApp").style.display    = "block";
@@ -125,19 +126,32 @@ function handleMealCheck(mealLabel, checked, calories){
         tdeeData ? tdeeData.target : null
     );
 
-    if (checked && mealLabel !== "🎑 Stop Eating"){
-        const moodData  = getMoodData();
-        const today     = getTodayKey();
-        const todayMood = moodData[today] || {};
-        if (!todayMood[mealLabel]){
-            showMoodRating(mealLabel);
-        }
+    // Only show mood popup if:
+    // 1. Meal was CHECKED not unchecked
+    // 2. Not stop eating
+    // 3. No mood entry already exists for this meal today
+    if (!checked) return; // ← exit early if unchecking
+    if (mealLabel === "🎑 Stop Eating") return; // ← skip stop eating
+
+    const moodData  = getMoodData();
+    const today     = getTodayKey();
+    const todayMood = moodData[today] || {};
+
+    if (todayMood[mealLabel]){
+        // Already rated today — show a small toast instead
+        showToast(`Already rated ${mealLabel} today ✓`);
+        return;
     }
+
+    showMoodRating(mealLabel);
 }
 
 // ---- NAV ----
 document.querySelectorAll(".nav-item").forEach(btn => {
     btn.addEventListener("click", function(){
+        // Skip if this is the feedback button
+        if (this.id === "feedbackButton") return;
+        
         showView(this.dataset.view);
         if (this.dataset.view === "historyView")  renderHistory();
         if (this.dataset.view === "settingsView") syncSettingsFromStorage();
@@ -231,6 +245,11 @@ document.getElementById("resetButton")
             showOnboarding();
         }
     });
+
+document.getElementById("feedbackButton")
+.addEventListener("click", function(){
+    window.open("https://forms.gle/UJYSr68XTcM7waHr9", "_blank");
+});
 
 // ---- CLICK HANDLERS ----
 document.addEventListener("click", function(e){

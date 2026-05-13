@@ -127,7 +127,7 @@ function renderSchedule(meals, tdee){
 
         const calorieText = meal.calories ? `${meal.calories} kcal` : "";
         const isChecked   = todayData[meal.label] === true;
-        const foodHTML    = getFoodSuggestions(meal.label, userGoal);
+        const foodHTML     = getFoodSuggestions(meal.label, userGoal);
 
         // Get personalised macro recommendations for this meal
         let macroHTML = "";
@@ -189,7 +189,7 @@ function renderSchedule(meals, tdee){
         details.innerHTML = `
             <p>${meal.description}</p>
             ${macroHTML}
-            <div class="macro-note">📊 Recommended for your goal & body</div>
+            ${macroHTML ? '<div class="macro-note">📊 Recommended for your goal & body</div>' : ""}
             ${foodHTML}
         `;
 
