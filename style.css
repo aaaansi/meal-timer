@@ -728,3 +728,453 @@ input[type="checkbox"] {
     text-align: center;
     padding: 12px;
 }
+
+/* ---- LIGHT MODE ---- */
+/* ---- LIGHT MODE ---- */
+body.light-mode {
+    background-color: #e8eaf2;
+    color: #1a1a2e;
+}
+
+body.light-mode h1 {
+    color: #e94560;
+}
+
+body.light-mode .view-title {
+    color: #1a1a2e;
+}
+
+body.light-mode fieldset {
+    background-color: #f2f4fb;
+    box-shadow: 0 2px 8px rgba(26,26,46,0.08);
+}
+
+body.light-mode legend {
+    color: #e94560;
+}
+
+body.light-mode label {
+    color: #4a4e6a;
+}
+
+body.light-mode .checkbox-group label {
+    color: #1a1a2e;
+}
+
+body.light-mode input[type="time"],
+body.light-mode input[type="number"],
+body.light-mode select {
+    background-color: #dde0f0;
+    color: #1a1a2e;
+    border: 1px solid #c8ccdd;
+}
+
+body.light-mode input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: none;
+}
+
+body.light-mode select option {
+    background-color: #dde0f0;
+}
+
+/* ---- STATUS CARD ---- */
+body.light-mode .status-card-large {
+    background: linear-gradient(135deg, #dde0f0, #d0d4eb);
+    border-left: 4px solid #e94560;
+    box-shadow: 0 4px 16px rgba(26,26,46,0.12);
+}
+
+body.light-mode .status-card-large::before {
+    background: radial-gradient(circle, #e9456015, transparent);
+}
+
+body.light-mode .status-label {
+    color: #4a4e6a;
+}
+
+body.light-mode .current-meal-name {
+    color: #1a1a2e;
+}
+
+body.light-mode .current-meal-details {
+    color: #4a4e6a;
+}
+
+body.light-mode .next-meal {
+    color: #1a1a2e;
+}
+
+body.light-mode .countdown {
+    color: #4a4e6a;
+}
+
+body.light-mode .streak {
+    color: #e94560;
+}
+
+/* ---- FASTING BAR ---- */
+body.light-mode .fasting-bar-card {
+    background-color: #f2f4fb;
+    box-shadow: 0 2px 8px rgba(26,26,46,0.08);
+}
+
+body.light-mode .fasting-bar-title {
+    color: #4a4e6a;
+}
+
+body.light-mode .fasting-bar-track {
+    background-color: #dde0f0;
+}
+
+body.light-mode .fasting-bar-labels {
+    color: #4a4e6a;
+}
+
+body.light-mode .fasting-bar-legend {
+    color: #4a4e6a;
+}
+
+body.light-mode .fasting-countdown {
+    color: #e94560;
+}
+
+/* ---- CALORIES ---- */
+body.light-mode .calories-remaining {
+    background-color: #f2f4fb;
+    box-shadow: 0 2px 8px rgba(26,26,46,0.08);
+}
+
+body.light-mode .remaining-label {
+    color: #4a4e6a;
+}
+
+body.light-mode .remaining-value {
+    color: #1a1a2e;
+}
+
+/* ---- PROGRESS ---- */
+body.light-mode .progress-bar-container {
+    background-color: #dde0f0;
+}
+
+body.light-mode .progress-text {
+    color: #4a4e6a;
+}
+
+/* ---- SCHEDULE ---- */
+body.light-mode .schedule-header {
+    color: #4a4e6a;
+}
+
+body.light-mode .schedule-item {
+    background-color: #f2f4fb;
+    box-shadow: 0 2px 6px rgba(26,26,46,0.06);
+}
+
+body.light-mode .schedule-item.past {
+    background-color: #eceef8;
+    opacity: 0.7;
+}
+
+body.light-mode .schedule-item.current {
+    background-color: #dde0f0;
+    border-left: 3px solid #e94560;
+}
+
+body.light-mode .schedule-details {
+    background-color: #eceef8;
+    color: #4a4e6a;
+}
+
+body.light-mode .schedule-time {
+    color: #4a4e6a;
+}
+
+body.light-mode .schedule-label {
+    color: #1a1a2e;
+}
+
+body.light-mode .schedule-calories {
+    color: #4a4e6a;
+}
+
+body.light-mode .schedule-item.current .schedule-label {
+    color: #e94560;
+}
+
+/* ---- SUMMARY CARDS ---- */
+body.light-mode .summary-card {
+    background-color: #f2f4fb;
+    box-shadow: 0 2px 8px rgba(26,26,46,0.08);
+}
+
+body.light-mode .summary-title {
+    color: #e94560;
+}
+
+body.light-mode .summary-label {
+    color: #4a4e6a;
+}
+
+body.light-mode .summary-value {
+    color: #1a1a2e;
+}
+
+body.light-mode .summary-row {
+    border-bottom: 1px solid #dde0f0;
+}
+
+body.light-mode .collapse-icon {
+    color: #e94560;
+}
+
+body.light-mode .summary-body {
+    border-top: 1px solid #dde0f0;
+}
+
+/* ---- BOTTOM NAV ---- */
+body.light-mode .bottom-nav {
+    background-color: #f2f4fb;
+    border-top: 1px solid #c8ccdd;
+    box-shadow: 0 -2px 10px rgba(26,26,46,0.08);
+}
+
+body.light-mode .nav-item {
+    color: #4a4e6a;
+}
+
+body.light-mode .nav-item.active {
+    color: #e94560;
+}
+
+/* ---- CALENDAR ---- */
+body.light-mode .calendar-day {
+    background-color: #dde0f0;
+    color: #4a4e6a;
+}
+
+body.light-mode .calendar-day.good {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+}
+
+body.light-mode .calendar-day.ok {
+    background-color: #ffe0b2;
+    color: #e65100;
+}
+
+body.light-mode .calendar-day.bad {
+    background-color: #ffcdd2;
+    color: #c62828;
+}
+
+body.light-mode .calendar-day.today {
+    border: 2px solid #e94560;
+}
+
+body.light-mode .calendar-legend {
+    color: #4a4e6a;
+}
+
+/* ---- HISTORY ---- */
+body.light-mode .stat-label {
+    color: #4a4e6a;
+}
+
+body.light-mode .history-stat .stat-value {
+    color: #e94560;
+}
+
+/* ---- ONBOARDING ---- */
+body.light-mode .onboarding-step {
+    background-color: #f2f4fb;
+    box-shadow: 0 2px 8px rgba(26,26,46,0.08);
+}
+
+body.light-mode .onboarding-subtitle {
+    color: #4a4e6a;
+}
+
+body.light-mode .onboarding-hint {
+    color: #4a4e6a80;
+}
+
+/* ---- MACROS ---- */
+body.light-mode .macro.protein {
+    background-color: #ffcdd2;
+    color: #c62828;
+}
+
+body.light-mode .macro.carbs {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+}
+
+body.light-mode .macro.fat {
+    background-color: #ffe0b2;
+    color: #e65100;
+}
+
+/* ---- BUTTONS ---- */
+body.light-mode .reset-button {
+    border: 1px solid #e9456044;
+    color: #e94560;
+}
+
+body.light-mode .reset-button:hover {
+    background-color: #e9456011;
+}
+/* ---- GOAL SELECTION ---- */
+.step-title {
+    font-size: 1.2rem;
+    color: #eaeaea;
+    margin-bottom: 24px;
+    font-weight: bold;
+}
+
+body.light-mode .step-title {
+    color: #1a1a2e;
+}
+
+.goal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 24px;
+}
+
+.goal-card {
+    background-color: #16213e;
+    border-radius: 16px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.goal-card:hover {
+    border-color: #e9456066;
+    transform: translateY(-2px);
+}
+
+.goal-card.selected {
+    border-color: #e94560;
+    background-color: #1a2a4a;
+}
+
+.goal-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+}
+
+.goal-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #eaeaea;
+    margin-bottom: 6px;
+}
+
+.goal-subtitle {
+    font-size: 0.75rem;
+    color: #a8a8b3;
+    line-height: 1.4;
+}
+
+body.light-mode .goal-card {
+    background-color: #f2f4fb;
+}
+
+body.light-mode .goal-card.selected {
+    background-color: #dde0f0;
+    border-color: #e94560;
+}
+
+body.light-mode .goal-title {
+    color: #1a1a2e;
+}
+
+.next-button {
+    width: 100%;
+    max-width: 300px;
+}
+
+.back-button {
+    background: transparent;
+    border: 1px solid #e9456044;
+    color: #e94560;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 12px;
+}
+
+.back-button:hover {
+    background-color: #e9456011;
+}
+
+.onboarding-step-view {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/* ---- FOOD SUGGESTIONS ---- */
+.food-suggestions {
+    margin-top: 12px;
+    border-top: 1px solid #e9456022;
+    padding-top: 12px;
+}
+
+.food-section-title {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #e94560;
+    margin-bottom: 6px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.avoid-title {
+    color: #ff9800;
+    margin-top: 12px;
+}
+
+.food-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.food-eat {
+    font-size: 0.82rem;
+    color: #a8a8b3;
+    padding: 4px 0;
+    border-bottom: 1px solid #e9456011;
+    line-height: 1.4;
+}
+
+.food-eat::marker { display: none; }
+
+.food-avoid {
+    font-size: 0.82rem;
+    color: #a8a8b3;
+    padding: 4px 0;
+    border-bottom: 1px solid #e9456011;
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
+body.light-mode .food-suggestions {
+    border-top: 1px solid #dde0f0;
+}
+
+body.light-mode .food-eat,
+body.light-mode .food-avoid {
+    color: #4a4e6a;
+    border-bottom: 1px solid #dde0f0;
+}

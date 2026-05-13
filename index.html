@@ -14,32 +14,54 @@
                     <div class="onboarding-icon">🍽️</div>
                     <h1>Meal'o'Clock</h1>
                     <p class="onboarding-subtitle">
-                        Research-backed meal timing for better energy, sleep and performance
+                        Research-backed meal timing personalised to your goal
                     </p>
-                    <div class="onboarding-steps">
-                        <div class="onboarding-step">
-                            <div class="step-number">1</div>
-                            <div class="step-text">Tell us when you wake up and sleep</div>
+
+                    <!-- STEP 1 - GOAL -->
+                    <div id="step1" class="onboarding-step-view">
+                        <div class="step-title">What's your main goal?</div>
+                        <div class="goal-grid">
+                            <div class="goal-card" data-goal="lose">
+                                <div class="goal-icon">⚖️</div>
+                                <div class="goal-title">Lose Weight</div>
+                                <div class="goal-subtitle">Optimise meal timing for fat loss</div>
+                            </div>
+                            <div class="goal-card" data-goal="energy">
+                                <div class="goal-icon">⚡</div>
+                                <div class="goal-title">More Energy</div>
+                                <div class="goal-subtitle">Time meals for peak performance</div>
+                            </div>
+                            <div class="goal-card" data-goal="sleep">
+                                <div class="goal-icon">😴</div>
+                                <div class="goal-title">Better Sleep</div>
+                                <div class="goal-subtitle">Eat in sync with your body clock</div>
+                            </div>
+                            <div class="goal-card" data-goal="muscle">
+                                <div class="goal-icon">💪</div>
+                                <div class="goal-title">Build Muscle</div>
+                                <div class="goal-subtitle">Maximise muscle growth and recovery</div>
+                            </div>
                         </div>
-                        <div class="onboarding-step">
-                            <div class="step-number">2</div>
-                            <div class="step-text">Get your personalised meal schedule</div>
-                        </div>
-                        <div class="onboarding-step">
-                            <div class="step-number">3</div>
-                            <div class="step-text">Know exactly what to eat and when</div>
-                        </div>
+                        <button type="button" id="step1Next" class="next-button" style="display:none">
+                            Next →
+                        </button>
                     </div>
-                    <div class="onboarding-form">
-                        <label for="wakeupTimeFirst">⏰ Wake up time</label>
-                        <input type="time" id="wakeupTimeFirst"/>
-                        <label for="sleepTimeFirst">🌙 Sleep time</label>
-                        <input type="time" id="sleepTimeFirst"/>
+
+                    <!-- STEP 2 - TIMES -->
+                    <div id="step2" class="onboarding-step-view" style="display:none">
+                        <div class="step-title">When do you wake up and sleep?</div>
+                        <div class="onboarding-form">
+                            <label for="wakeupTimeFirst">⏰ Wake up time</label>
+                            <input type="time" id="wakeupTimeFirst"/>
+                            <label for="sleepTimeFirst">🌙 Sleep time</label>
+                            <input type="time" id="sleepTimeFirst"/>
+                        </div>
+                        <button type="button" id="step2Back" class="back-button">← Back</button>
+                        <button type="button" id="getStartedButton">Get Started →</button>
+                        <p class="onboarding-hint">
+                            You can add exercise times and calorie tracking in settings later
+                        </p>
                     </div>
-                    <button type="button" id="getStartedButton">Get Started →</button>
-                    <p class="onboarding-hint">
-                        You can add exercise times and calorie tracking in settings later
-                    </p>
                 </div>
             </div>
         </div>
@@ -137,6 +159,17 @@
                             <input type="checkbox" id="timeFormat"/>
                             <label for="timeFormat">12 hour format</label>
                         </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="lightMode"/>
+                            <label for="lightMode">Light mode</label>
+                        </div>
+                        <label for="goalSelect">Your goal</label>
+                        <select id="goalSelect">
+                            <option value="lose">⚖️ Lose Weight</option>
+                            <option value="energy">⚡ More Energy</option>
+                            <option value="sleep">😴 Better Sleep</option>
+                            <option value="muscle">💪 Build Muscle</option>
+                        </select>
                         <label for="wakeupTime">What time do you wake up?</label>
                         <input type="time" id="wakeupTime"/>
                         <label for="sleepTime">What time do you go to sleep?</label>
