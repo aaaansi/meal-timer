@@ -240,9 +240,28 @@ document.getElementById("saveButton")
 
 document.getElementById("resetButton")
     .addEventListener("click", function(){
-        if (confirm("Reset everything and start over?")){
+        if (confirm("Reset everything and start over? This cannot be undone.")){
+            
+            // Clear localStorage first
             localStorage.clear();
-            showOnboarding();
+
+            // Clear all caches
+            if ('caches' in window){
+                caches.keys().then(cacheNames => {
+                    cacheNames.forEach(cacheName => caches.delete(cacheName));
+                });
+            }
+
+            // Unregister service worker
+            if ('serviceWorker' in navigator){
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    registrations.forEach(reg => reg.unregister());
+                    // Reload AFTER service worker unregistered
+                    location.reload();
+                });
+            } else {
+                location.reload();
+            }
         }
     });
 
