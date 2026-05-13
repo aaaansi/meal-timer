@@ -8,7 +8,7 @@ function applyTheme(){
 
 // ---- VIEW MANAGEMENT ----
 function showView(viewId){
-    ["homeView","historyView","settingsView"].forEach(id => {
+    ["homeView","historyView","settingsView","insightsView"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "none";
     });
@@ -17,7 +17,6 @@ function showView(viewId){
         btn.classList.toggle("active", btn.dataset.view === viewId);
     });
 }
-
 function showApp(){
     document.getElementById("firstTime").style.display  = "none";
     document.getElementById("mainApp").style.display    = "block";
@@ -105,9 +104,10 @@ function calculate(){
     renderSummary(tdeeData, fastingData);
 }
 
-// ---- MEAL CHECK ----
+
 function handleMealCheck(mealLabel, checked, calories){
     markMeal(mealLabel, checked);
+
     let totalCal = 0;
     let eatenCal = 0;
     document.querySelectorAll(".meal-check").forEach(cb => {
@@ -117,8 +117,14 @@ function handleMealCheck(mealLabel, checked, calories){
             if (cb.checked) eatenCal += cal;
         }
     });
+
     const tdeeData = calculateTDEE();
     updateCaloriesRemaining(eatenCal, totalCal, tdeeData ? tdeeData.target : null);
+
+    // Show mood rating if meal was checked
+    if (checked && mealLabel !== "🎑 Stop Eating"){
+        showMoodRating(mealLabel);
+    }
 }
 
 // ---- NAV ----
@@ -127,6 +133,7 @@ document.querySelectorAll(".nav-item").forEach(btn => {
         showView(this.dataset.view);
         if (this.dataset.view === "historyView")  renderHistory();
         if (this.dataset.view === "settingsView") syncSettingsFromStorage();
+        if (this.dataset.view === "insightsView") renderInsights();
     });
 });
 

@@ -11,6 +11,7 @@ const ASSETS = [
     "/meal-timer/js/render.js",
     "/meal-timer/js/storage.js",
     "/meal-timer/js/app.js",
+    "/meal-timer/js/mood.js",
     "/meal-timer/icons/icon-192.png",
     "/meal-timer/icons/icon-512.png"
 ];

@@ -236,11 +236,32 @@
                 </div>
             </div>
 
+            <!-- INSIGHTS VIEW -->
+            <div id="insightsView" class="view" style="display:none">
+                <div class="center">
+                    <h2 class="view-title">📊 Insights</h2>
+                    <div id="insightsContent">
+                        <div class="insights-empty">
+                            <div class="insights-empty-icon">📊</div>
+                            <div class="insights-empty-title">No insights yet</div>
+                            <div class="insights-empty-text">
+                                Start logging your meals and rating your energy levels. 
+                                Insights appear after a few days of data.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- BOTTOM NAV -->
             <nav class="bottom-nav">
                 <button class="nav-item active" data-view="homeView">
                     <span class="nav-icon">🏠</span>
                     <span class="nav-label">Home</span>
+                </button>
+                <button class="nav-item" data-view="insightsView">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Insights</span>
                 </button>
                 <button class="nav-item" data-view="historyView">
                     <span class="nav-icon">📅</span>
@@ -269,6 +290,7 @@
         <script src="js/calculator.js"></script>
         <script src="js/meals.js"></script>
         <script src="js/compliance.js"></script>
+        <script src="js/mood.js"></script>
         <script src="js/render.js"></script>
         <script src="js/storage.js"></script>
         <script src="js/app.js"></script>
