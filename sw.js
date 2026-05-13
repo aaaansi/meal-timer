@@ -3,8 +3,14 @@ const ASSETS = [
     "/meal-timer/",
     "/meal-timer/index.html",
     "/meal-timer/style.css",
-    "/meal-timer/script.js",
     "/meal-timer/manifest.json",
+    "/meal-timer/js/timeUtils.js",
+    "/meal-timer/js/calculator.js",
+    "/meal-timer/js/meals.js",
+    "/meal-timer/js/compliance.js",
+    "/meal-timer/js/render.js",
+    "/meal-timer/js/storage.js",
+    "/meal-timer/js/app.js",
     "/meal-timer/icons/icon-192.png",
     "/meal-timer/icons/icon-512.png"
 ];

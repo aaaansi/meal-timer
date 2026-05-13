@@ -251,7 +251,7 @@
             </nav>
         </div>
 
-        <script src="script.js">
+        <script>
             if ('serviceWorker' in navigator){
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/meal-timer/sw.js')
@@ -260,5 +260,12 @@
                 });
             }
         </script>
+        <script src="js/timeUtils.js"></script>
+        <script src="js/calculator.js"></script>
+        <script src="js/meals.js"></script>
+        <script src="js/compliance.js"></script>
+        <script src="js/render.js"></script>
+        <script src="js/storage.js"></script>
+        <script src="js/app.js"></script>
     </body>
 </html>
