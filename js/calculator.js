@@ -39,18 +39,16 @@ function calculateFastingWindow(wakeMinutes, sleepMinutes){
     const windowHours    = (sleepMinutes - wakeMinutes) / HOURS;
     const breakfastStart = wakeMinutes + 30;
 
-    // Dynamic stop eating based on window size
     const eatStop = windowHours >= 4
         ? sleepMinutes - HOURS * 2
         : sleepMinutes;
 
-    // Guard against negative eating window
     const eatingWindow  = Math.max(0, eatStop - breakfastStart);
-    const fastingWindow = MINUTESADAY - eatingWindow;
     const eatingHrs     = Math.floor(eatingWindow / HOURS);
-    const fastingHrs    = Math.floor(fastingWindow / HOURS);
 
-    // Guard against nonsensical protocols
+    // Calculate fasting from eating to avoid rounding mismatch
+    const fastingHrs    = 24 - eatingHrs;
+
     if (eatingHrs <= 0 || fastingHrs >= 24){
         return {
             eatingHrs:  Math.round(windowHours),

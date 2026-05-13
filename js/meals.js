@@ -708,60 +708,53 @@ function buildMeals(wakeMinutes, sleepMinutes, cal, userGoal){
     };
     const adj = goalAdjustments[userGoal] || goalAdjustments.energy;
 
-    // Always add stop eating if window > 2 hours
     const stopEatingOffset = windowHours >= 8
-        ? adj.stopEatingOffset          // full offset (2-3hrs)
+        ? adj.stopEatingOffset
         : windowHours >= 4
-            ? HOURS                     // 1hr before sleep for medium windows
-            : 0;                        // no stop eating for tiny windows
+            ? HOURS
+            : 0;
 
     const stopEatingTime = sleepMinutes - stopEatingOffset;
 
     if (windowHours < 4){
-        // Ultra short window → one meal only
         meals.push({
             label:       "🌅 Light Meal",
             sortTime:    wakeMinutes + 30,
             type:        "Single balanced meal • Short window",
-            description: "Your eating window is very short. Focus on one nutrient-dense balanced meal. Prioritise protein and healthy fats to sustain energy. Research shows compressed eating windows work best with fewer, more nutrient-dense meals.",
+            description: "Your eating window is very short. Focus on one nutrient-dense balanced meal. Prioritise protein and healthy fats to sustain energy.",
             calories:    cal.breakfast ? Math.round(cal.breakfast * 1.5) : null,
             macros:      {carbs: 0.35, protein: 0.40, fat: 0.25}
         });
 
     } else if (windowHours < 6){
-        // Short window → breakfast + snack
         meals.push(
-            {label: "🌅 Breakfast", sortTime: wakeMinutes + 30,         type: "Moderate meal • Short window",  description: getDescription("breakfast", userGoal), calories: cal.breakfast, macros: {carbs: 0.45, protein: 0.35, fat: 0.20}},
-            {label: "🍿 Snack",     sortTime: wakeMinutes + HOURS * 2,  type: "Light snack • Keep it small",   description: getDescription("snack", userGoal),     calories: cal.snack,     macros: {carbs: 0.40, protein: 0.40, fat: 0.20}},
+            {label: "🌅 Breakfast", sortTime: wakeMinutes + 30,        type: "Moderate meal • Short window",  description: getDescription("breakfast", userGoal), calories: cal.breakfast, macros: {carbs: 0.45, protein: 0.35, fat: 0.20}},
+            {label: "🍿 Snack",     sortTime: wakeMinutes + HOURS * 2, type: "Light snack • Keep it small",   description: getDescription("snack", userGoal),     calories: cal.snack,     macros: {carbs: 0.40, protein: 0.40, fat: 0.20}},
         );
 
     } else if (windowHours < 8){
-        // Medium window → breakfast + snack + lunch
         meals.push(
-            {label: "🌅 Breakfast", sortTime: wakeMinutes + 30,                    type: "Largest meal • High carbs + protein", description: getDescription("breakfast", userGoal), calories: cal.breakfast, macros: {carbs: 0.50, protein: 0.30, fat: 0.20}},
-            {label: "🍿 Snack",     sortTime: wakeMinutes + HOURS * 2,             type: "Small • Fruits, nuts or yogurt",      description: getDescription("snack", userGoal),     calories: cal.snack,     macros: {carbs: 0.40, protein: 0.40, fat: 0.20}},
-            {label: "☀️ Lunch",    sortTime: wakeMinutes + HOURS * 4,             type: "Moderate • Balanced macros",          description: getDescription("lunch", userGoal),     calories: cal.lunch,     macros: {carbs: 0.40, protein: 0.30, fat: 0.30}},
+            {label: "🌅 Breakfast", sortTime: wakeMinutes + 30,        type: "Largest meal • High carbs + protein", description: getDescription("breakfast", userGoal), calories: cal.breakfast, macros: {carbs: 0.50, protein: 0.30, fat: 0.20}},
+            {label: "🍿 Snack",     sortTime: wakeMinutes + HOURS * 2, type: "Small • Fruits, nuts or yogurt",      description: getDescription("snack", userGoal),     calories: cal.snack,     macros: {carbs: 0.40, protein: 0.40, fat: 0.20}},
+            {label: "☀️ Lunch",    sortTime: wakeMinutes + HOURS * 4, type: "Moderate • Balanced macros",          description: getDescription("lunch", userGoal),     calories: cal.lunch,     macros: {carbs: 0.40, protein: 0.30, fat: 0.30}},
         );
 
     } else if (windowHours < 10){
-        // Standard window → full plan minus pre-sleep
         meals.push(
-            {label: "🌅 Breakfast", sortTime: wakeMinutes + 30,                    type: "Largest meal • High carbs + protein", description: getDescription("breakfast", userGoal), calories: cal.breakfast, macros: {carbs: 0.50, protein: 0.30, fat: 0.20}},
-            {label: "🍿 Snack",     sortTime: wakeMinutes + HOURS * 3,             type: "Small • Fruits, nuts or yogurt",      description: getDescription("snack", userGoal),     calories: cal.snack,     macros: {carbs: 0.40, protein: 0.40, fat: 0.20}},
-            {label: "☀️ Lunch",    sortTime: wakeMinutes + HOURS * 5,             type: "Moderate • Balanced macros",          description: getDescription("lunch", userGoal),     calories: cal.lunch,     macros: {carbs: 0.40, protein: 0.30, fat: 0.30}},
-            {label: "🌄 Dinner",   sortTime: sleepMinutes - adj.dinnerOffset,     type: "Small • Low carb, high protein",      description: getDescription("dinner", userGoal),    calories: cal.dinner,    macros: {carbs: 0.20, protein: 0.50, fat: 0.30}},
+            {label: "🌅 Breakfast", sortTime: wakeMinutes + 30,                type: "Largest meal • High carbs + protein", description: getDescription("breakfast", userGoal), calories: cal.breakfast, macros: {carbs: 0.50, protein: 0.30, fat: 0.20}},
+            {label: "🍿 Snack",     sortTime: wakeMinutes + HOURS * 3,         type: "Small • Fruits, nuts or yogurt",      description: getDescription("snack", userGoal),     calories: cal.snack,     macros: {carbs: 0.40, protein: 0.40, fat: 0.20}},
+            {label: "☀️ Lunch",    sortTime: wakeMinutes + HOURS * 5,         type: "Moderate • Balanced macros",          description: getDescription("lunch", userGoal),     calories: cal.lunch,     macros: {carbs: 0.40, protein: 0.30, fat: 0.30}},
+            {label: "🌄 Dinner",   sortTime: sleepMinutes - adj.dinnerOffset, type: "Small • Low carb, high protein",      description: getDescription("dinner", userGoal),    calories: cal.dinner,    macros: {carbs: 0.20, protein: 0.50, fat: 0.30}},
         );
 
     } else {
-        // Full window → complete meal plan
         meals.push(
-            {label: "🌅 Breakfast", sortTime: wakeMinutes + 30,                    type: "Largest meal • High carbs + protein", description: getDescription("breakfast", userGoal), calories: cal.breakfast, macros: {carbs: 0.50, protein: 0.30, fat: 0.20}},
-            {label: "🍿 Snack",     sortTime: wakeMinutes + HOURS * 3,             type: "Small • Fruits, nuts or yogurt",      description: getDescription("snack", userGoal),     calories: cal.snack,     macros: {carbs: 0.40, protein: 0.40, fat: 0.20}},
-            {label: "☀️ Lunch",    sortTime: wakeMinutes + HOURS * 5,             type: "Moderate • Balanced macros",          description: getDescription("lunch", userGoal),     calories: cal.lunch,     macros: {carbs: 0.40, protein: 0.30, fat: 0.30}},
-            {label: "🌄 Dinner",   sortTime: sleepMinutes - adj.dinnerOffset,     type: "Small • Low carb, high protein",      description: getDescription("dinner", userGoal),    calories: cal.dinner,    macros: {carbs: 0.20, protein: 0.50, fat: 0.30}},
+            {label: "🌅 Breakfast", sortTime: wakeMinutes + 30,                type: "Largest meal • High carbs + protein", description: getDescription("breakfast", userGoal), calories: cal.breakfast, macros: {carbs: 0.50, protein: 0.30, fat: 0.20}},
+            {label: "🍿 Snack",     sortTime: wakeMinutes + HOURS * 3,         type: "Small • Fruits, nuts or yogurt",      description: getDescription("snack", userGoal),     calories: cal.snack,     macros: {carbs: 0.40, protein: 0.40, fat: 0.20}},
+            {label: "☀️ Lunch",    sortTime: wakeMinutes + HOURS * 5,         type: "Moderate • Balanced macros",          description: getDescription("lunch", userGoal),     calories: cal.lunch,     macros: {carbs: 0.40, protein: 0.30, fat: 0.30}},
+            {label: "🌄 Dinner",   sortTime: sleepMinutes - adj.dinnerOffset, type: "Small • Low carb, high protein",      description: getDescription("dinner", userGoal),    calories: cal.dinner,    macros: {carbs: 0.20, protein: 0.50, fat: 0.30}},
         );
 
-        // Only add snack 2 if window > 12 hours
         if (windowHours >= 12){
             meals.push({
                 label:       "🫐 Afternoon Snack",
@@ -774,7 +767,6 @@ function buildMeals(wakeMinutes, sleepMinutes, cal, userGoal){
         }
     }
 
-    // Always add stop eating if it falls within the window
     if (stopEatingTime > wakeMinutes && stopEatingTime < sleepMinutes){
         meals.push({
             label:       "🎑 Stop Eating",
@@ -786,7 +778,9 @@ function buildMeals(wakeMinutes, sleepMinutes, cal, userGoal){
         });
     }
 
-    // Filter out any meals that fall outside wake/sleep window
+    // Sort INSIDE buildMeals so tests and app both get sorted meals
+    meals.sort((a, b) => a.sortTime - b.sortTime);
+
     return meals.filter(meal =>
         meal.sortTime >= wakeMinutes &&
         meal.sortTime <= sleepMinutes

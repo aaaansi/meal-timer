@@ -265,6 +265,80 @@ document.addEventListener("click", function(e){
 // ---- INIT ----
 applyTheme();
 
+// ---- AUTO REFRESH ----
+let lastDate = getTodayKey();
+
+function autoRefresh(){
+    const currentDate = getTodayKey();
+
+    // Date has changed → full recalculate
+    if (currentDate !== lastDate){
+        lastDate = currentDate;
+        calculate();
+        return;
+    }
+
+    // Same day → just update time-sensitive parts
+    const wakeupTime = localStorage.getItem("wakeupTime");
+    const sleepTime  = localStorage.getItem("sleepTime");
+    if (!wakeupTime || !sleepTime) return;
+
+    const wakeMinutes = timeToMinutes(wakeupTime);
+    let sleepMinutes  = timeToMinutes(sleepTime);
+    if (sleepMinutes < wakeMinutes) sleepMinutes += MINUTESADAY;
+
+    // Only update if on home view
+    const homeView = document.getElementById("homeView");
+    if (!homeView || homeView.style.display === "none") return;
+
+    // Rebuild meals to recheck current/past status
+    const userGoal = localStorage.getItem("goal") || "energy";
+    const tdeeData = calculateTDEE();
+    const tdee     = tdeeData ? tdeeData.target : null;
+
+    const cal = {
+        breakfast:       tdee ? Math.round(tdee * 0.30) : null,
+        snack:           tdee ? Math.round(tdee * 0.10) : null,
+        lunch:           tdee ? Math.round(tdee * 0.25) : null,
+        dinner:          tdee ? Math.round(tdee * 0.20) : null,
+        preWorkoutMeal:  tdee ? Math.round(tdee * 0.15) : null,
+        preWorkoutSnack: tdee ? Math.round(tdee * 0.08) : null,
+        postWorkout:     tdee ? Math.round(tdee * 0.15) : null,
+        preSleep:        tdee ? Math.round(tdee * 0.05) : null,
+    };
+
+    const meals = buildMeals(wakeMinutes, sleepMinutes, cal, userGoal);
+
+    const exerciseTime   = localStorage.getItem("exerciseTime");
+    const exerciseToggle = localStorage.getItem("exerciseToggle") === "true";
+    const windowHours    = (sleepMinutes - wakeMinutes) / HOURS;
+
+    if (exerciseToggle && exerciseTime && windowHours >= 6){
+        const exerciseMinutes = timeToMinutes(exerciseTime);
+        const exerciseMeals   = buildExerciseMeals(exerciseMinutes, sleepMinutes, cal, userGoal);
+        exerciseMeals
+            .filter(meal => meal.sortTime >= wakeMinutes && meal.sortTime <= sleepMinutes)
+            .forEach(meal => meals.push(meal));
+    }
+
+    meals.sort((a, b) => a.sortTime - b.sortTime);
+
+    // Update only time-sensitive elements
+    renderStatus(meals);
+    renderFastingBar(wakeMinutes, sleepMinutes, windowHours);
+    renderSchedule(meals, tdee);
+}
+
+// Run every minute
+setInterval(autoRefresh, 60 * 1000);
+
+// Also run when app comes back to foreground
+document.addEventListener("visibilitychange", function(){
+    if (document.visibilityState === "visible"){
+        autoRefresh();
+    }
+});
+
 if (localStorage.getItem("wakeupTime") && localStorage.getItem("sleepTime")){
     showApp();
     calculate();
