@@ -35,16 +35,38 @@ function renderStatus(meals){
     updateStreak();
 }
 
-function renderFastingBar(wakeMinutes, sleepMinutes){
+function renderFastingBar(wakeMinutes, sleepMinutes, windowHours){
     const breakfastStart = wakeMinutes + 30;
-    const eatStop        = sleepMinutes - HOURS * 2;
+    const eatStop = windowHours >= 4
+        ? sleepMinutes - HOURS * 2
+        : sleepMinutes;
+
     const now            = new Date();
     const currentMinutes = now.getHours() * HOURS + now.getMinutes();
     const toPercent      = (mins) => (mins / MINUTESADAY) * 100;
 
-    document.getElementById("eatingWindow").style.left  = `${toPercent(breakfastStart)}%`;
-    document.getElementById("eatingWindow").style.width = `${toPercent(eatStop - breakfastStart)}%`;
-    document.getElementById("nowMarker").style.left     = `${toPercent(currentMinutes)}%`;
+    const eatStartPct = toPercent(breakfastStart);
+    const eatWidthPct = toPercent(eatStop - breakfastStart);
+    const nowPct      = toPercent(currentMinutes);
+
+    const eatingWindowEl = document.getElementById("eatingWindow");
+    const nowMarkerEl    = document.getElementById("nowMarker");
+    const countdownEl    = document.getElementById("fastingCountdown");
+    const legendEl       = document.getElementById("eatingWindowText");
+
+    if (!eatingWindowEl || !nowMarkerEl || !countdownEl || !legendEl) return;
+
+    // Guard against negative or zero eating window
+    if (eatStop <= breakfastStart || windowHours < 1){
+        eatingWindowEl.style.width = "0%";
+        countdownEl.textContent    = "Window too short for fasting calculation";
+        legendEl.textContent       = `Eating window: ${Math.round(windowHours * 10) / 10} hours`;
+        return;
+    }
+
+    eatingWindowEl.style.left  = `${eatStartPct}%`;
+    eatingWindowEl.style.width = `${eatWidthPct}%`;
+    nowMarkerEl.style.left     = `${nowPct}%`;
 
     const isInEatingWindow  = currentMinutes >= breakfastStart && currentMinutes <= eatStop;
     const minutesUntilOpen  = breakfastStart - currentMinutes;
@@ -67,12 +89,11 @@ function renderFastingBar(wakeMinutes, sleepMinutes){
         countdownText = "Fasting window — no food until morning";
     }
 
-    document.getElementById("fastingCountdown").textContent = countdownText;
+    countdownEl.textContent = countdownText;
 
     const eatingHrs  = Math.floor((eatStop - breakfastStart) / HOURS);
     const fastingHrs = 24 - eatingHrs;
-    document.getElementById("eatingWindowText").textContent =
-        `${minutesToTime(breakfastStart)} → ${minutesToTime(eatStop)} • ${eatingHrs}h eating / ${fastingHrs}h fasting`;
+    legendEl.textContent = `${minutesToTime(breakfastStart)} → ${minutesToTime(eatStop)} • ${eatingHrs}h eating / ${fastingHrs}h fasting`;
 }
 
 function renderSchedule(meals, tdee){

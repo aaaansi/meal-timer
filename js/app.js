@@ -39,6 +39,9 @@ function calculate(){
     let sleepMinutes  = timeToMinutes(sleepTime);
     if (sleepMinutes < wakeMinutes) sleepMinutes += MINUTESADAY;
 
+    const windowMinutes = sleepMinutes - wakeMinutes;
+    const windowHours   = windowMinutes / HOURS;
+
     const userGoal = localStorage.getItem("goal") || "energy";
     const tdeeData = calculateTDEE();
     const tdee     = tdeeData ? tdeeData.target : null;
@@ -54,20 +57,50 @@ function calculate(){
         preSleep:        tdee ? Math.round(tdee * 0.05) : null,
     };
 
+    // Show window warning
+    const warningEl = document.getElementById("windowWarning");
+    if (warningEl){
+        if (windowHours < 1){
+            warningEl.innerHTML = `
+                <div class="window-warning">
+                    ⚠️ Your wake and sleep times are too close together.
+                    Please set at least a 4 hour window for meal recommendations.
+                </div>
+            `;
+            document.getElementById("scheduleList").innerHTML = "";
+            document.getElementById("summary").innerHTML = "";
+            renderFastingBar(wakeMinutes, sleepMinutes, windowHours);
+            return;
+        } else if (windowHours < 6){
+            warningEl.innerHTML = `
+                <div class="window-warning">
+                    ⚠️ Your eating window is only ${Math.round(windowHours)} hours.
+                    Research suggests a minimum of 8-10 hours for optimal nutrition.
+                </div>
+            `;
+        } else {
+            warningEl.innerHTML = "";
+        }
+    }
+
     const meals = buildMeals(wakeMinutes, sleepMinutes, cal, userGoal);
 
+    // Only add exercise meals if window is large enough and they fit
     const exerciseTime   = localStorage.getItem("exerciseTime");
     const exerciseToggle = localStorage.getItem("exerciseToggle") === "true";
-    if (exerciseToggle && exerciseTime){
+    if (exerciseToggle && exerciseTime && windowHours >= 6){
         const exerciseMinutes = timeToMinutes(exerciseTime);
-        meals.push(...buildExerciseMeals(exerciseMinutes, sleepMinutes, cal, userGoal));
+        const exerciseMeals   = buildExerciseMeals(exerciseMinutes, sleepMinutes, cal, userGoal);
+        exerciseMeals
+            .filter(meal => meal.sortTime >= wakeMinutes && meal.sortTime <= sleepMinutes)
+            .forEach(meal => meals.push(meal));
     }
 
     meals.sort((a, b) => a.sortTime - b.sortTime);
 
-    const fastingData = calculateFastingWindow(wakeMinutes, sleepMinutes - HOURS * 2);
+    const fastingData = calculateFastingWindow(wakeMinutes, sleepMinutes);
     renderStatus(meals);
-    renderFastingBar(wakeMinutes, sleepMinutes);
+    renderFastingBar(wakeMinutes, sleepMinutes, windowHours);
     renderSchedule(meals, tdee);
     renderSummary(tdeeData, fastingData);
 }

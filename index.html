@@ -6,15 +6,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="manifest" href="manifest.json">
         <meta name="theme-color" content="#e94560">
+        <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="Meal'o'Clock">
         <link rel="apple-touch-icon" href="icons/icon-192.png">
     </head>
-
     <body>
+
         <!-- FIRST TIME VIEW -->
-        <div id="firstTime">
+        <div id="firstTime" style="display:none">
             <div class="center">
                 <div class="onboarding">
                     <div class="onboarding-icon">🍽️</div>
@@ -92,6 +93,9 @@
                         <div id="streakCount" class="streak"></div>
                     </div>
 
+                    <!-- WINDOW WARNING -->
+                    <div id="windowWarning"></div>
+
                     <!-- FASTING BAR -->
                     <div class="fasting-bar-card">
                         <div class="fasting-bar-header">
@@ -125,6 +129,10 @@
                     <!-- SCHEDULE -->
                     <div class="schedule-header">Today's Schedule</div>
                     <div id="scheduleList"></div>
+
+                    <!-- SUMMARY -->
+                    <div id="summary"></div>
+
                 </div>
             </div>
 
@@ -159,6 +167,7 @@
             <div id="settingsView" class="view" style="display:none">
                 <div class="center">
                     <h2 class="view-title">⚙️ Settings</h2>
+
                     <fieldset>
                         <legend>Time</legend>
                         <div class="checkbox-group">
@@ -208,12 +217,6 @@
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>
-                            <label for="goal">Goal</label>
-                            <select id="goal">
-                                <option value="lose">Lose weight (-500 cal)</option>
-                                <option value="maintain">Maintain weight</option>
-                                <option value="gain">Build muscle (+300 cal)</option>
-                            </select>
                             <label for="activity">Activity Level</label>
                             <select id="activity">
                                 <option value="1.2">Sedentary (no exercise)</option>
@@ -227,7 +230,6 @@
                     </div>
 
                     <button type="button" id="saveButton">Save Settings</button>
-
                     <button type="button" id="resetButton" class="reset-button">
                         Reset & Start Over
                     </button>
@@ -252,14 +254,17 @@
         </div>
 
         <script>
-            if ('serviceWorker' in navigator){
+            if ('serviceWorker' in navigator &&
+                location.hostname !== '127.0.0.1' &&
+                location.hostname !== 'localhost'){
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/meal-timer/sw.js')
-                    .then(reg => console.log('SW registered'))
-                    .catch(err => console.log('SW failed', err));
+                        .then(reg => console.log('SW registered'))
+                        .catch(err => console.log('SW failed', err));
                 });
             }
         </script>
+
         <script src="js/timeUtils.js"></script>
         <script src="js/calculator.js"></script>
         <script src="js/meals.js"></script>

@@ -35,13 +35,33 @@ function calculateTDEE(){
     };
 }
 
-function calculateFastingWindow(wakeMinutes, stopEatingMinutes){
-    const breakfastTime = wakeMinutes + 30;
-    const eatingWindow  = stopEatingMinutes - breakfastTime;
+function calculateFastingWindow(wakeMinutes, sleepMinutes){
+    const windowHours    = (sleepMinutes - wakeMinutes) / HOURS;
+    const breakfastStart = wakeMinutes + 30;
+
+    // Dynamic stop eating based on window size
+    const eatStop = windowHours >= 4
+        ? sleepMinutes - HOURS * 2
+        : sleepMinutes;
+
+    // Guard against negative eating window
+    const eatingWindow  = Math.max(0, eatStop - breakfastStart);
     const fastingWindow = MINUTESADAY - eatingWindow;
+    const eatingHrs     = Math.floor(eatingWindow / HOURS);
+    const fastingHrs    = Math.floor(fastingWindow / HOURS);
+
+    // Guard against nonsensical protocols
+    if (eatingHrs <= 0 || fastingHrs >= 24){
+        return {
+            eatingHrs:  Math.round(windowHours),
+            fastingHrs: Math.round(24 - windowHours),
+            protocol:   `${Math.round(24 - windowHours)}:${Math.round(windowHours)}`
+        };
+    }
+
     return {
-        eatingHrs:  Math.floor(eatingWindow / HOURS),
-        fastingHrs: Math.floor(fastingWindow / HOURS),
-        protocol:   `${Math.floor(fastingWindow / HOURS)}:${Math.floor(eatingWindow / HOURS)}`
+        eatingHrs:  eatingHrs,
+        fastingHrs: fastingHrs,
+        protocol:   `${fastingHrs}:${eatingHrs}`
     };
 }
