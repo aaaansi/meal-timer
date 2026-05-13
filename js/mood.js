@@ -37,7 +37,7 @@ function showMoodRating(mealLabel){
     popup.className = "mood-popup";
     popup.innerHTML = `
         <div class="mood-popup-content">
-            <div class="mood-popup-title">How do you feel after ${mealLabel}?</div>
+            <div class="mood-popup-title">How do you feel after ${sanitise(mealLabel)}?</div>
             <div class="mood-popup-close" onclick="document.getElementById('moodPopup').remove()">✕</div>
 
             <div class="mood-section">
@@ -105,13 +105,13 @@ function saveMoodFromPopup(mealLabel){
     const energy = parseInt(popup.dataset.energy);
     const hunger = parseInt(popup.dataset.hunger);
 
-    if (!energy || !hunger) return;
+    // Validate ratings are 1-5
+    if (!energy || energy < 1 || energy > 5) return;
+    if (!hunger || hunger < 1 || hunger > 5) return;
 
-    logMoodEntry(mealLabel, energy, hunger);
+    logMoodEntry(sanitise(mealLabel), energy, hunger);
     popup.remove();
-
-    // Show brief confirmation
-    showToast(`Logged! ✓`);
+    showToast("Logged! ✓");
 }
 
 function showToast(message){

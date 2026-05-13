@@ -10,28 +10,52 @@ function calculateTDEE(){
     const activity      = parseFloat(localStorage.getItem("activity")) || 1.2;
     const extraCalories = parseInt(localStorage.getItem("extraCalories")) || 0;
 
-    if (!age || !weight || !height) return null;
+    // Validate all inputs are within safe ranges
+    if (!age    || age    < 10  || age    > 100) return null;
+    if (!weight || weight < 30  || weight > 300) return null;
+    if (!height || height < 100 || height > 250) return null;
+
+    // Validate activity multiplier is a known value
+    const validActivities = [1.2, 1.375, 1.55, 1.725];
+    const safeActivity    = validActivities.includes(activity) ? activity : 1.2;
+
+    // Validate extra calories is reasonable
+    const safeExtra = Math.min(Math.max(0, extraCalories), 3000);
+
+    // Validate sex
+    const safeSex = ["male", "female"].includes(sex) ? sex : "male";
+
+    // Validate goal
+    const validGoals = ["lose", "energy", "sleep", "muscle", "maintain"];
+    const safeGoal   = validGoals.includes(goal) ? goal : "maintain";
 
     let bmr;
-    if (sex === "male"){
+    if (safeSex === "male"){
         bmr = 88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age);
     } else {
         bmr = 447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age);
     }
 
-    const tdee    = Math.round(bmr * activity);
-    const netTDEE = tdee + extraCalories;
+    // Sanity check BMR is in reasonable range
+    if (bmr < 500 || bmr > 5000) return null;
+
+    const tdee    = Math.round(bmr * safeActivity);
+    const netTDEE = tdee + safeExtra;
     let target    = netTDEE;
-    if (goal === "lose")  target -= 500;
-    if (goal === "muscle") target += 300;
+
+    if (safeGoal === "lose")   target -= 500;
+    if (safeGoal === "muscle") target += 300;
+
+    // Ensure target is never dangerously low
+    target = Math.max(1200, target);
 
     return {
         bmr:         Math.round(bmr),
         tdee:        tdee,
-        extraBurn:   extraCalories,
+        extraBurn:   safeExtra,
         maintenance: netTDEE,
         target:      target,
-        goal:        goal
+        goal:        safeGoal
     };
 }
 
