@@ -237,7 +237,7 @@ function renderSummary(tdeeData, fastingData){
                 </div>
                 ${tdeeData.extraBurn > 0 ? `
                 <div class="summary-row">
-                    <span class="summary-label">⌚ Mi Band extra burn</span>
+                    <span class="summary-label">⌚ Fitness tracker burn</span>
                     <span class="summary-value green">+${tdeeData.extraBurn} kcal</span>
                 </div>` : ""}
                 <div class="summary-row">

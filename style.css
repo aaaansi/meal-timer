@@ -1688,3 +1688,14 @@ body.light-mode .toggle-switch input:checked + .toggle-slider {
 .wind-down-title {
     color: #4caf50;
 }
+.label-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: #a8a8b350;
+    font-style: italic;
+    margin-bottom: 4px;
+}
+
+body.light-mode .label-hint {
+    color: #4a4e6a80;
+}
