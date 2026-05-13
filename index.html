@@ -3,101 +3,9 @@
     <head>
         <link rel="stylesheet" href="style.css">
         <title>Meal'o'Clock</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <!-- DASHBOARD VIEW -->
-        <div id="dashboard" style="display:none">
-            <div class="center">
-                <div class="app-header">
-                    <h1 id="appTitle" style="cursor: pointer;">🍽️ Meal'o'Clock</h1>
-                    <button id="settingsButton" class="icon-button">⚙️</button>
-                </div>
-
-                <!-- RIGHT NOW CARD -->
-                <div id="statusCard" class="status-card-large">
-                    <div class="status-label">🕐 RIGHT NOW</div>
-                    <div id="currentMeal" class="current-meal-name"></div>
-                    <div id="currentDetails" class="current-meal-details"></div>
-                    <div id="nextMeal" class="next-meal"></div>
-                    <div id="countdown" class="countdown"></div>
-                </div>
-
-                <!-- TODAY'S SCHEDULE -->
-                <div class="schedule-header">Today's Schedule</div>
-                <div id="scheduleList"></div>
-
-                <!-- SUMMARY CARDS -->
-                <div id="summary"></div>
-            </div>
-        </div>
-
-        <!-- SETTINGS VIEW -->
-        <div id="settings" style="display:none">
-            <div class="center">
-                <div class="app-header">
-                    <button id="backButton" class="icon-button">← Back</button>
-                    <h2 class="settings-title">⚙️ Settings</h2>
-                </div>
-
-                <fieldset>
-                    <legend>Time</legend>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="timeFormat"/>
-                        <label for="timeFormat">12 hour format</label>
-                    </div>
-                    <label for="wakeupTime">What time do you wake up?</label>
-                    <input type="time" id="wakeupTime" name="wakeup time"/>
-                    <label for="sleepTime">What time do you go to sleep?</label>
-                    <input type="time" id="sleepTime" name="sleep time"/>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="exerciseToggle"/>
-                        <label for="exerciseToggle">I exercise</label>
-                    </div>
-                    <div id="exerciseTimeContainer">
-                        <label for="exerciseTime">What time do you exercise?</label>
-                        <input type="time" id="exerciseTime" name="exercise time"/>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="profileToggle"/>
-                        <label for="profileToggle">Add my profile for calorie guidance</label>
-                    </div>
-                </fieldset>
-
-                <div id="profileContainer">
-                    <fieldset>
-                        <legend>Your Profile</legend>
-                        <label for="age">Age</label>
-                        <input type="number" id="age" placeholder="25" min="10" max="100"/>
-                        <label for="weight">Weight (kg)</label>
-                        <input type="number" id="weight" placeholder="70" min="30" max="300"/>
-                        <label for="height">Height (cm)</label>
-                        <input type="number" id="height" placeholder="170" min="100" max="250"/>
-                        <label for="sex">Sex</label>
-                        <select id="sex">
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                        <label for="goal">Goal</label>
-                        <select id="goal">
-                            <option value="lose">Lose weight (-500 cal)</option>
-                            <option value="maintain">Maintain weight</option>
-                            <option value="gain">Build muscle (+300 cal)</option>
-                        </select>
-                        <label for="activity">Activity Level</label>
-                        <select id="activity">
-                            <option value="1.2">Sedentary (no exercise)</option>
-                            <option value="1.375">Lightly active (1-3x/week)</option>
-                            <option value="1.55">Moderately active (3-5x/week)</option>
-                            <option value="1.725">Very active (6-7x/week)</option>
-                        </select>
-                        <label for="extraCalories">Extra calories burned (Mi Band)</label>
-                        <input type="number" id="extraCalories" placeholder="0" min="0" max="3000"/>
-                    </fieldset>
-                </div>
-
-                <button type="button" id="saveButton">Save & Return</button>
-            </div>
-        </div>
 
         <!-- FIRST TIME VIEW -->
         <div id="firstTime">
@@ -108,7 +16,6 @@
                     <p class="onboarding-subtitle">
                         Research-backed meal timing for better energy, sleep and performance
                     </p>
-
                     <div class="onboarding-steps">
                         <div class="onboarding-step">
                             <div class="step-number">1</div>
@@ -123,20 +30,186 @@
                             <div class="step-text">Know exactly what to eat and when</div>
                         </div>
                     </div>
-
                     <div class="onboarding-form">
                         <label for="wakeupTimeFirst">⏰ Wake up time</label>
                         <input type="time" id="wakeupTimeFirst"/>
                         <label for="sleepTimeFirst">🌙 Sleep time</label>
                         <input type="time" id="sleepTimeFirst"/>
                     </div>
-
                     <button type="button" id="getStartedButton">Get Started →</button>
                     <p class="onboarding-hint">
                         You can add exercise times and calorie tracking in settings later
                     </p>
                 </div>
             </div>
+        </div>
+
+        <!-- MAIN APP -->
+        <div id="mainApp" style="display:none">
+
+            <!-- HOME VIEW -->
+            <div id="homeView" class="view">
+                <div class="center">
+                    <div class="app-header">
+                        <h1 id="appTitle">🍽️ Meal'o'Clock</h1>
+                    </div>
+
+                    <!-- STATUS CARD -->
+                    <div class="status-card-large">
+                        <div class="status-label">🕐 RIGHT NOW</div>
+                        <div id="currentMeal" class="current-meal-name"></div>
+                        <div id="currentDetails" class="current-meal-details"></div>
+                        <div id="nextMeal" class="next-meal"></div>
+                        <div id="countdown" class="countdown"></div>
+                        <div id="streakCount" class="streak"></div>
+                    </div>
+
+                    <!-- FASTING BAR -->
+                    <div class="fasting-bar-card">
+                        <div class="fasting-bar-header">
+                            <span class="fasting-bar-title">⏱️ Today's Eating Window</span>
+                            <span id="fastingCountdown" class="fasting-countdown"></span>
+                        </div>
+                        <div class="fasting-bar-container">
+                            <div id="fastingBar" class="fasting-bar-track">
+                                <div id="eatingWindow" class="eating-window"></div>
+                                <div id="nowMarker" class="now-marker"></div>
+                            </div>
+                            <div class="fasting-bar-labels">
+                                <span>12am</span>
+                                <span>6am</span>
+                                <span>12pm</span>
+                                <span>6pm</span>
+                                <span>12am</span>
+                            </div>
+                        </div>
+                        <div class="fasting-bar-legend">
+                            <span id="eatingWindowText"></span>
+                        </div>
+                    </div>
+
+                    <!-- CALORIES REMAINING -->
+                    <div id="caloriesRemaining" class="calories-remaining"></div>
+
+                    <!-- DAILY PROGRESS -->
+                    <div id="dailyProgress" class="daily-progress"></div>
+
+                    <!-- SCHEDULE -->
+                    <div class="schedule-header">Today's Schedule</div>
+                    <div id="scheduleList"></div>
+                </div>
+            </div>
+
+            <!-- HISTORY VIEW -->
+            <div id="historyView" class="view" style="display:none">
+                <div class="center">
+                    <h2 class="view-title">📅 History</h2>
+                    <div class="summary-card">
+                        <div class="history-stats">
+                            <div class="history-stat">
+                                <div id="currentStreak" class="stat-value">0</div>
+                                <div class="stat-label">🔥 Current Streak</div>
+                            </div>
+                            <div class="history-stat">
+                                <div id="bestStreak" class="stat-value">0</div>
+                                <div class="stat-label">🏆 Best Streak</div>
+                            </div>
+                            <div class="history-stat">
+                                <div id="totalDays" class="stat-value">0</div>
+                                <div class="stat-label">✅ Good Days</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">30-Day Compliance</div>
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS VIEW -->
+            <div id="settingsView" class="view" style="display:none">
+                <div class="center">
+                    <h2 class="view-title">⚙️ Settings</h2>
+                    <fieldset>
+                        <legend>Time</legend>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="timeFormat"/>
+                            <label for="timeFormat">12 hour format</label>
+                        </div>
+                        <label for="wakeupTime">What time do you wake up?</label>
+                        <input type="time" id="wakeupTime"/>
+                        <label for="sleepTime">What time do you go to sleep?</label>
+                        <input type="time" id="sleepTime"/>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="exerciseToggle"/>
+                            <label for="exerciseToggle">I exercise</label>
+                        </div>
+                        <div id="exerciseTimeContainer">
+                            <label for="exerciseTime">What time do you exercise?</label>
+                            <input type="time" id="exerciseTime"/>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="profileToggle"/>
+                            <label for="profileToggle">Add my profile for calorie guidance</label>
+                        </div>
+                    </fieldset>
+
+                    <div id="profileContainer">
+                        <fieldset>
+                            <legend>Your Profile</legend>
+                            <label for="age">Age</label>
+                            <input type="number" id="age" placeholder="25" min="10" max="100"/>
+                            <label for="weight">Weight (kg)</label>
+                            <input type="number" id="weight" placeholder="70" min="30" max="300"/>
+                            <label for="height">Height (cm)</label>
+                            <input type="number" id="height" placeholder="170" min="100" max="250"/>
+                            <label for="sex">Sex</label>
+                            <select id="sex">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            <label for="goal">Goal</label>
+                            <select id="goal">
+                                <option value="lose">Lose weight (-500 cal)</option>
+                                <option value="maintain">Maintain weight</option>
+                                <option value="gain">Build muscle (+300 cal)</option>
+                            </select>
+                            <label for="activity">Activity Level</label>
+                            <select id="activity">
+                                <option value="1.2">Sedentary (no exercise)</option>
+                                <option value="1.375">Lightly active (1-3x/week)</option>
+                                <option value="1.55">Moderately active (3-5x/week)</option>
+                                <option value="1.725">Very active (6-7x/week)</option>
+                            </select>
+                            <label for="extraCalories">Extra calories burned (Mi Band)</label>
+                            <input type="number" id="extraCalories" placeholder="0" min="0" max="3000"/>
+                        </fieldset>
+                    </div>
+
+                    <button type="button" id="saveButton">Save Settings</button>
+
+                    <button type="button" id="resetButton" class="reset-button">
+                        Reset & Start Over
+                    </button>
+                </div>
+            </div>
+
+            <!-- BOTTOM NAV -->
+            <nav class="bottom-nav">
+                <button class="nav-item active" data-view="homeView">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                </button>
+                <button class="nav-item" data-view="historyView">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-label">History</span>
+                </button>
+                <button class="nav-item" data-view="settingsView">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Settings</span>
+                </button>
+            </nav>
         </div>
 
         <script src="script.js"></script>
