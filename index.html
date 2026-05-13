@@ -4,9 +4,15 @@
         <link rel="stylesheet" href="style.css">
         <title>Meal'o'Clock</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="manifest" href="manifest.json">
+        <meta name="theme-color" content="#e94560">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Meal'o'Clock">
+        <link rel="apple-touch-icon" href="icons/icon-192.png">
     </head>
-    <body>
 
+    <body>
         <!-- FIRST TIME VIEW -->
         <div id="firstTime">
             <div class="center">
@@ -245,6 +251,14 @@
             </nav>
         </div>
 
-        <script src="script.js"></script>
+        <script src="script.js">
+            if ('serviceWorker' in navigator){
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/meal-timer/sw.js')
+                    .then(reg => console.log('SW registered'))
+                    .catch(err => console.log('SW failed', err));
+                });
+            }
+        </script>
     </body>
 </html>
