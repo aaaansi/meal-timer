@@ -1511,3 +1511,49 @@ body.light-mode .insight-log-meal {
     flex-shrink: 0;
     font-size: 0.85rem;
 }
+.remaining-divider {
+    border-top: 1px solid #e9456022;
+    margin: 8px 0;
+}
+
+.remaining-total {
+    color: #a8a8b3;
+    font-weight: normal;
+    font-size: 0.85rem;
+}
+
+.macro-bar-container {
+    height: 4px;
+    background-color: #0f3460;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+body.light-mode .macro-bar-container {
+    background-color: #dde0f0;
+}
+
+.macro-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.protein-bar { background-color: #e94560; }
+.carbs-bar   { background-color: #4caf50; }
+.fat-bar     { background-color: #ff9800; }
+.remaining-macro-title {
+    font-size: 0.75rem;
+    color: #a8a8b3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 4px 0 8px 0;
+}
+
+.macro-note {
+    font-size: 0.75rem;
+    color: #a8a8b350;
+    margin-top: 6px;
+    font-style: italic;
+}

@@ -104,12 +104,12 @@ function calculate(){
     renderSummary(tdeeData, fastingData);
 }
 
-
 function handleMealCheck(mealLabel, checked, calories){
     markMeal(mealLabel, checked);
 
     let totalCal = 0;
     let eatenCal = 0;
+
     document.querySelectorAll(".meal-check").forEach(cb => {
         const cal = parseInt(cb.dataset.calories) || 0;
         if (cal > 0){
@@ -119,11 +119,19 @@ function handleMealCheck(mealLabel, checked, calories){
     });
 
     const tdeeData = calculateTDEE();
-    updateCaloriesRemaining(eatenCal, totalCal, tdeeData ? tdeeData.target : null);
+    updateCaloriesRemaining(
+        eatenCal,
+        totalCal,
+        tdeeData ? tdeeData.target : null
+    );
 
-    // Show mood rating if meal was checked
     if (checked && mealLabel !== "🎑 Stop Eating"){
-        showMoodRating(mealLabel);
+        const moodData  = getMoodData();
+        const today     = getTodayKey();
+        const todayMood = moodData[today] || {};
+        if (!todayMood[mealLabel]){
+            showMoodRating(mealLabel);
+        }
     }
 }
 

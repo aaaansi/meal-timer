@@ -107,6 +107,11 @@ function renderSchedule(meals, tdee){
     const today        = getTodayKey();
     const todayData    = data[today] || {};
     const userGoal     = localStorage.getItem("goal") || "energy";
+    const hasExercise  = localStorage.getItem("exerciseToggle") === "true";
+    const weight       = parseFloat(localStorage.getItem("weight")) || null;
+
+    // Total meal calories for proportion calculation
+    const totalMealCalories = meals.reduce((sum, m) => sum + (m.calories || 0), 0);
 
     let totalCal = 0;
     let eatenCal = 0;
@@ -120,8 +125,31 @@ function renderSchedule(meals, tdee){
         if (isPast)        className += " past";
         if (isCurrentMeal) className += " current";
 
+        const calorieText = meal.calories ? `${meal.calories} kcal` : "";
+        const isChecked   = todayData[meal.label] === true;
+        const foodHTML    = getFoodSuggestions(meal.label, userGoal);
+
+        // Get personalised macro recommendations for this meal
         let macroHTML = "";
-        if (meal.calories && meal.macros){
+        if (meal.calories && weight){
+            const macros = getMealMacroTargets(
+                meal.calories,
+                totalMealCalories,
+                userGoal,
+                hasExercise,
+                weight
+            );
+            if (macros){
+                macroHTML = `
+                    <div class="meal-macros">
+                        <span class="macro protein">🥩 ${macros.protein}g protein</span>
+                        <span class="macro carbs">🌾 ${macros.carbs}g carbs</span>
+                        <span class="macro fat">🥑 ${macros.fat}g fat</span>
+                    </div>
+                `;
+            }
+        } else if (meal.calories && meal.macros){
+            // Fall back to ratio based if no bio data
             const protein = Math.round((meal.calories * meal.macros.protein) / 4);
             const carbs   = Math.round((meal.calories * meal.macros.carbs) / 4);
             const fat     = Math.round((meal.calories * meal.macros.fat) / 9);
@@ -133,10 +161,6 @@ function renderSchedule(meals, tdee){
                 </div>
             `;
         }
-
-        const calorieText = meal.calories ? `${meal.calories} kcal` : "";
-        const isChecked   = todayData[meal.label] === true;
-        const foodHTML    = getFoodSuggestions(meal.label, userGoal);
 
         if (meal.calories){
             totalCal += meal.calories;
@@ -165,6 +189,7 @@ function renderSchedule(meals, tdee){
         details.innerHTML = `
             <p>${meal.description}</p>
             ${macroHTML}
+            <div class="macro-note">📊 Recommended for your goal & body</div>
             ${foodHTML}
         `;
 
@@ -311,18 +336,136 @@ function renderHistory(){
     document.getElementById("calendar").innerHTML = html;
 }
 
+function getMealMacroTargets(mealCalories, totalMealCalories, userGoal, hasExercise, weight){
+    // Get daily targets using same formula as tracker
+    const proteinMultipliers = {
+        lose:   1.6,
+        energy: 1.4,
+        sleep:  1.2,
+        muscle: 2.2
+    };
+
+    let proteinMultiplier = proteinMultipliers[userGoal] || 1.4;
+    if (hasExercise) proteinMultiplier = Math.min(2.4, proteinMultiplier + 0.2);
+
+    // Daily protein target
+    let dailyProtein;
+    if (weight){
+        dailyProtein = Math.round(weight * proteinMultiplier);
+    } else {
+        return null; // no bio data → no recommendations
+    }
+
+    // Cap protein at 40% of calories
+    const tdee          = parseFloat(localStorage.getItem("weight") ? 
+        localStorage.getItem("tdeeTarget") : null) || totalMealCalories;
+    const maxProtein    = Math.round((tdee * 0.40) / 4);
+    dailyProtein        = Math.min(dailyProtein, maxProtein);
+
+    const proteinCals   = dailyProtein * 4;
+    const remainingCal  = Math.max(0, tdee - proteinCals);
+
+    const carbRatios = {
+        lose:   0.45,
+        energy: 0.60,
+        sleep:  0.55,
+        muscle: 0.55
+    };
+
+    const carbRatio    = carbRatios[userGoal] || 0.55;
+    const dailyCarbs   = Math.round((remainingCal * carbRatio) / 4);
+    const dailyFat     = Math.round((remainingCal * (1 - carbRatio)) / 9);
+
+    // This meal's share of daily targets
+    const mealPercent  = totalMealCalories > 0
+        ? mealCalories / totalMealCalories
+        : 0;
+
+    return {
+        protein: Math.round(dailyProtein * mealPercent),
+        carbs:   Math.round(dailyCarbs   * mealPercent),
+        fat:     Math.round(dailyFat     * mealPercent)
+    };
+}
+
+function getDailyMacroTargets(dailyTarget, userGoal, hasExercise, weight){
+    const proteinMultipliers = {
+        lose:   1.6,
+        energy: 1.4,
+        sleep:  1.2,
+        muscle: 2.2
+    };
+
+    let proteinMultiplier = proteinMultipliers[userGoal] || 1.4;
+    if (hasExercise) proteinMultiplier = Math.min(2.4, proteinMultiplier + 0.2);
+
+    let dailyProteinTarget;
+    if (weight){
+        dailyProteinTarget = Math.round(weight * proteinMultiplier);
+    } else {
+        dailyProteinTarget = Math.min(
+            Math.round((dailyTarget * 0.30) / 4),
+            150
+        );
+    }
+
+    // Cap protein at 40% of TDEE
+    const maxProteinCals   = dailyTarget * 0.40;
+    const proteinCals      = Math.min(dailyProteinTarget * 4, maxProteinCals);
+    dailyProteinTarget     = Math.round(proteinCals / 4);
+
+    const remainingCal     = Math.max(0, dailyTarget - proteinCals);
+
+    const carbRatios = {
+        lose:   0.45,
+        energy: 0.60,
+        sleep:  0.55,
+        muscle: 0.55
+    };
+
+    const carbRatio        = carbRatios[userGoal] || 0.55;
+    const dailyCarbsTarget = Math.round((remainingCal * carbRatio) / 4);
+    const dailyFatTarget   = Math.round((remainingCal * (1 - carbRatio)) / 9);
+
+    return { dailyProteinTarget, dailyCarbsTarget, dailyFatTarget };
+}
+
 function updateCaloriesRemaining(eaten, total, tdee){
     const el = document.getElementById("caloriesRemaining");
     if (!el) return;
 
     if (total === 0){
-        el.innerHTML = "";
+        el.innerHTML     = "";
         el.style.display = "none";
         return;
     }
 
-    el.style.display = "block";
-    const remaining  = total - eaten;
+    el.style.display  = "block";
+    const dailyTarget = tdee || total;
+    const remaining   = dailyTarget - eaten;
+    const userGoal    = localStorage.getItem("goal") || "energy";
+    const hasExercise = localStorage.getItem("exerciseToggle") === "true";
+    const weight      = parseFloat(localStorage.getItem("weight")) || null;
+
+    const { dailyProteinTarget, dailyCarbsTarget, dailyFatTarget } =
+        getDailyMacroTargets(dailyTarget, userGoal, hasExercise, weight);
+
+    const eatenPercent     = total > 0 ? Math.min(1, eaten / total) : 0;
+    const calcEatenProtein = Math.round(dailyProteinTarget * eatenPercent);
+    const calcEatenCarbs   = Math.round(dailyCarbsTarget   * eatenPercent);
+    const calcEatenFat     = Math.round(dailyFatTarget     * eatenPercent);
+
+    const proteinPct = Math.min(100, (calcEatenProtein / dailyProteinTarget) * 100);
+    const carbsPct   = Math.min(100, (calcEatenCarbs   / dailyCarbsTarget)   * 100);
+    const fatPct     = Math.min(100, (calcEatenFat     / dailyFatTarget)     * 100);
+
+    const goalLabels = {
+        lose:   "Weight Loss",
+        energy: "Energy",
+        sleep:  "Sleep",
+        muscle: "Muscle Building"
+    };
+
     el.innerHTML = `
         <div class="remaining-row">
             <span class="remaining-label">✅ Eaten so far</span>
@@ -330,16 +473,53 @@ function updateCaloriesRemaining(eaten, total, tdee){
         </div>
         <div class="remaining-row">
             <span class="remaining-label">🍽️ Remaining today</span>
-            <span class="remaining-value ${remaining < 0 ? "red" : "highlight"}">${remaining} kcal</span>
+            <span class="remaining-value ${remaining < 0 ? "red" : "highlight"}">${Math.max(0, remaining)} kcal</span>
         </div>
         <div class="remaining-row">
-            <span class="summary-label">📊 Daily total</span>
-            <span class="remaining-value">${total} kcal</span>
+            <span class="remaining-label">🎯 Daily target</span>
+            <span class="remaining-value">${dailyTarget} kcal</span>
         </div>
-        ${tdee ? `
+        ${weight ? `
+        <div class="remaining-divider"></div>
+        <div class="remaining-macro-title">
+            Macros for ${goalLabels[userGoal] || "your goal"}
+            ${hasExercise ? "• Exercise boost 💪" : ""}
+        </div>
         <div class="remaining-row">
-            <span class="remaining-label">🎯 TDEE target</span>
-            <span class="remaining-value">${tdee} kcal</span>
-        </div>` : ""}
+            <span class="remaining-label">🥩 Protein</span>
+            <span class="remaining-value">
+                ${calcEatenProtein}g
+                <span class="remaining-total">/ ${dailyProteinTarget}g</span>
+            </span>
+        </div>
+        <div class="macro-bar-container">
+            <div class="macro-bar protein-bar" style="width: ${proteinPct}%"></div>
+        </div>
+        <div class="remaining-row">
+            <span class="remaining-label">🌾 Carbs</span>
+            <span class="remaining-value">
+                ${calcEatenCarbs}g
+                <span class="remaining-total">/ ${dailyCarbsTarget}g</span>
+            </span>
+        </div>
+        <div class="macro-bar-container">
+            <div class="macro-bar carbs-bar" style="width: ${carbsPct}%"></div>
+        </div>
+        <div class="remaining-row">
+            <span class="remaining-label">🥑 Fat</span>
+            <span class="remaining-value">
+                ${calcEatenFat}g
+                <span class="remaining-total">/ ${dailyFatTarget}g</span>
+            </span>
+        </div>
+        <div class="macro-bar-container">
+            <div class="macro-bar fat-bar" style="width: ${fatPct}%"></div>
+        </div>
+        ` : `
+        <div class="remaining-divider"></div>
+        <div class="remaining-macro-title">
+            Add your weight in profile for macro targets
+        </div>
+        `}
     `;
 }
